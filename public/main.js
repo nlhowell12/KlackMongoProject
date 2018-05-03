@@ -4,7 +4,7 @@ const textarea = document.getElementById("newmessage");
 const ding = new Audio('typewriter_ding.m4a');
 
 // this will be the list of all messages displayed on the client
-let messages = [{timestamp: 0}];
+let messages = [ { timestamp: 0 } ];
 
 let name = window.prompt("Enter your name");
 // if they didn't type anything at the prompt, make up a random name
@@ -47,13 +47,13 @@ function fetchMessages() {
             listUsers(data.users);
 
             // examine all received messages, add those newer than the last one shown
-            for(let i = 0; i < data.messages.length; i++){ 
-                let msg = data.messages[i];
-                if(msg.timestamp > messages[messages.length-1].timestamp) {
+            data.messages.forEach(msg => {
+                if(msg.timestamp > messages[messages.length - 1].timestamp) {
                     appendMessage(msg);
                     shouldDing = true;
                 }
-            }
+            })
+            
             if(shouldScroll && shouldDing) scrollMessages();
             if(shouldDing) ding.play();
 
