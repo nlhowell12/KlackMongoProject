@@ -1,3 +1,12 @@
+
+//1 - Your app should connect to a local MongoDB database named klack. -- Done
+//2 - Your app defines a Message model with an appropriate schema. -- Done
+//3 - Every posted message to klack gets stored as an instance of the Message model. 
+//4 - When the Node.js server for klack is exited and restarted, message history should be preserved.
+//5 - This criterion is linked to a Learning OutcomeLast active times for users 
+//    (used to show which users have been recently active) should also be based 
+//    on the message history in MongoDB and should persist across restarts of the server.
+
 const express = require('express')
 const querystring = require('querystring');
 const mongoose = require('mongoose');
@@ -12,9 +21,8 @@ const DB_PASSWORD = 'admin';
 const DB_URI = 'ds113870.mlab.com:13870';
 const PORT = process.env.PORT || 3000;
 
-// List of all messages
-let messages = []
 
+let lastMsgTimestamp=0;
 // Track last active times for each sender
 let users = {}
 
@@ -30,14 +38,6 @@ var messageSchema = new Schema({
 // Compile a Message model from the schema
 var Message = mongoose.model('Message', messageSchema);
 
-// First time load the msgs from the db
-Message.find(function(err, msgs){
-    msgs.forEach(msg => {
-        console.log("in foreach - msg.message: ", msg.message);
-        messages.push(msg);
-    });
-}); 
-
 function userSortFn(a, b) {
     var nameA = a.name.toUpperCase(); // ignore upper and lowercase
     var nameB = b.name.toUpperCase(); // ignore upper and lowercase
@@ -47,34 +47,30 @@ function userSortFn(a, b) {
     if (nameA > nameB) {
       return 1;
     }
-      // names must be equal
+    // names must be equal
     return 0;      
 }
 
 app.get("/messages", (request, response) => {
+    // List of all messages
+    let messages = []
     const now = Date.now();
     const requireActiveSince = now - (15*1000) // consider inactive after 15 seconds
     usersSimple = Object.keys(users).map((x) => ({name: x, active: (users[x] > requireActiveSince)}))
     usersSimple.sort(userSortFn);
     usersSimple.filter((a) => (a.name !== request.query.for))
     users[request.query.for] = now;
-    
+   
     // Get message from database
-    Message.find(
-        {
-            timestamp: {
-                $gte: messages[messages.length - 1].timestamp
-            }
-        },
-        function(err, msgs){
-            console.log("messages from database - msgs: ", msgs);
-            msgs.forEach(msg => {
-                console.log("in foreach - msg.message: ", msg.message);
-                messages.push(msg);
-            });
-        }
-    );  
-    response.send({messages: messages.slice(-40), users: usersSimple})
+    Message.find({}).sort({timestamp: 'asc'}).exec(function(err, msgs) { 
+        msgs.forEach(msg => {
+            console.log("in foreach - msg.message: ", msg.message);
+            messages.push(msg);
+        });
+        console.log("Messeges after sort :", messages);
+        lastMsgTimestamp = messages[messages.length - 1];
+        response.send({messages: messages.slice(-40), users: usersSimple})
+    });     
 })
 
 app.post("/messages", (request, response) => {
@@ -95,7 +91,6 @@ app.post("/messages", (request, response) => {
         .catch(err => {
             console.log('Unable to save to database'); 
         });
-    messages.push(request.body)
     users[request.body.sender] = request.body.timestamp;
     response.status(201)
     response.send(request.body)  
@@ -103,5 +98,4 @@ app.post("/messages", (request, response) => {
 
 app.listen(PORT, () => {
     mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`);
-    console.log(`listening at port ${PORT}`);
 })
