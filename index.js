@@ -60,15 +60,15 @@ app.get("/messages", (request, response) => {
         msgs.forEach(msg => {
             //console.log("in foreach - msg.message: ", msg.message);
             messages.push(msg);
-            if (!usersTimestamps[msg.name]) {
-                usersTimestamps[msg.name] = msg.timestamp
-            } else if (usersTimestamps[msg.name] < msg.timestamp) {
-                usersTimestamps[msg.name] = msg.timestamp
+            if (!users[msg.name]) {
+                users[msg.name] = msg.timestamp
+            } else if (users[msg.name] < msg.timestamp) {
+                users[msg.name] = msg.timestamp
             }
         });
         usersSimple = Object.keys(users).map((x) => ({name: x, active: (users[x] > requireActiveSince)}))
         usersSimple.sort(userSortFn);
-        usersSimple.filter((a) => (a.name !== usersTimestamps.name))
+        usersSimple.filter((a) => (a.name !== users.name))
         //users[request.query.for] = now;
         console.log("Messeges after sort :", messages);
         lastMsgTimestamp = messages[messages.length - 1];
@@ -78,12 +78,13 @@ app.get("/messages", (request, response) => {
 
 app.post("/messages", (request, response) => {
     // add a timestamp to each incoming message.
-    request.body.timestamp = Date.now()
+    let now = Date.now()
+    const requireActiveSince = request.body.timestamp - (15*1000)
     //Create an instance of Message model
     var message = new Message({
         sender: request.body.sender,
         message: request.body.message,
-        timestamp: request.body.timestamp
+        timestamp: now
     });
     // Save to database
     message.save()
@@ -93,9 +94,11 @@ app.post("/messages", (request, response) => {
         .catch(err => {
             console.log('Unable to save to database'); 
         });
-    users[request.body.sender] = request.body.timestamp;
+    users[request.body.sender] = now;
+    console.log(users);
+    // create a new list of users with a flag indicating whether they have been active recently
     response.status(201)
-    response.send(request.body)  
+    response.send({messages: message, users: users})  
 })
 
 app.listen(PORT, () => {

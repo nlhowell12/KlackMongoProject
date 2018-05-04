@@ -40,7 +40,7 @@ function scrollMessages() {
 }
 
 function fetchMessages() {
-    fetch("/messages?for=" + encodeURIComponent(name))
+    fetch("/messages")
         .then(response => response.json())
         .then(data => {
             // if already scrolled to bottom, do so again after adding messages
