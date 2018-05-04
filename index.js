@@ -78,13 +78,13 @@ app.get("/messages", (request, response) => {
 
 app.post("/messages", (request, response) => {
     // add a timestamp to each incoming message.
-    let now = Date.now()
+    request.body.timestamp = Date.now()
     const requireActiveSince = request.body.timestamp - (15*1000)
     //Create an instance of Message model
     var message = new Message({
         sender: request.body.sender,
         message: request.body.message,
-        timestamp: now
+        timestamp: request.body.timestamp
     });
     // Save to database
     message.save()
@@ -94,11 +94,10 @@ app.post("/messages", (request, response) => {
         .catch(err => {
             console.log('Unable to save to database'); 
         });
-    users[request.body.sender] = now;
-    console.log(users);
+    users[request.body.sender] = request.body.timestamp;
     // create a new list of users with a flag indicating whether they have been active recently
     response.status(201)
-    response.send({messages: message, users: users})  
+    response.send({messages: request.body, users: users})  
 })
 
 app.listen(PORT, () => {
