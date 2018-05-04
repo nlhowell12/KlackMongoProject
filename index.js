@@ -55,17 +55,21 @@ app.get("/messages", (request, response) => {
     let messages = []
     const now = Date.now();
     const requireActiveSince = now - (15*1000) // consider inactive after 15 seconds
-    usersSimple = Object.keys(users).map((x) => ({name: x, active: (users[x] > requireActiveSince)}))
-    usersSimple.sort(userSortFn);
-    usersSimple.filter((a) => (a.name !== request.query.for))
-    users[request.query.for] = now;
-   
     // Get message from database
     Message.find({}).sort({timestamp: 'asc'}).exec(function(err, msgs) { 
         msgs.forEach(msg => {
-            console.log("in foreach - msg.message: ", msg.message);
+            //console.log("in foreach - msg.message: ", msg.message);
             messages.push(msg);
+            if (!usersTimestamps[msg.name]) {
+                usersTimestamps[msg.name] = msg.timestamp
+            } else if (usersTimestamps[msg.name] < msg.timestamp) {
+                usersTimestamps[msg.name] = msg.timestamp
+            }
         });
+        usersSimple = Object.keys(users).map((x) => ({name: x, active: (users[x] > requireActiveSince)}))
+        usersSimple.sort(userSortFn);
+        usersSimple.filter((a) => (a.name !== usersTimestamps.name))
+        //users[request.query.for] = now;
         console.log("Messeges after sort :", messages);
         lastMsgTimestamp = messages[messages.length - 1];
         response.send({messages: messages.slice(-40), users: usersSimple})
