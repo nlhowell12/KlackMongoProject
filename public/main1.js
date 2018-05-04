@@ -4,7 +4,7 @@ const textarea = document.getElementById("newmessage");
 const ding = new Audio('typewriter_ding.m4a');
 
 // this will be the list of all messages displayed on the client
-let messages = [ { timestamp: 0 } ];
+let messages = [{timestamp: 0}];
 
 let name = window.prompt("Enter your name");
 // if they didn't type anything at the prompt, make up a random name
@@ -13,17 +13,12 @@ if(name.length===0) name = "Anon-" + Math.floor(Math.random()*1000);
 // add the sender and text of one new message to the bottom of the message list
 function appendMessage(msg) {
     messages.push(msg);
-    //Time the msg was sent 
-    var d = new Date(msg.timestamp);
-     // expected output: "7/25/2016, 1:35:07 PM"
-
     messagesDiv.innerHTML +=
-      `<div class="message"><strong>${msg.sender}</strong>(${d.toLocaleString()}) : <br>${msg.message}</div>`;
+      `<div class="message"><strong>${msg.sender}</strong><br>${msg.message}</div>`;
 }
 
 // redraw the entire list of users, indicating active/inactive
 function listUsers(users) {
-    console.log(users);
     let userStrings = users.map((user) =>
         (user.active ? `<span class="active"><span class="cyan">&#9679;</span> ${user.name}</span>` : `<span class="inactive">&#9675; ${user.name}</span>`)
     );
@@ -41,7 +36,6 @@ function scrollMessages() {
 }
 
 function fetchMessages() {
-    console.log("name--",name);
     fetch("/messages?for=" + encodeURIComponent(name))
         .then(response => response.json())
         .then(data => {
@@ -53,13 +47,13 @@ function fetchMessages() {
             listUsers(data.users);
 
             // examine all received messages, add those newer than the last one shown
-            data.messages.forEach(msg => {
-                if(msg.timestamp > messages[messages.length - 1].timestamp) {
+            for(let i = 0; i < data.messages.length; i++){ 
+                let msg = data.messages[i];
+                if(msg.timestamp > messages[messages.length-1].timestamp) {
                     appendMessage(msg);
                     shouldDing = true;
                 }
-            })
-
+            }
             if(shouldScroll && shouldDing) scrollMessages();
             if(shouldDing) ding.play();
 
@@ -72,7 +66,6 @@ document.getElementById("newmessage").addEventListener("keypress", (event) => {
     // if the key pressed was enter (and not shift enter), post the message.
     if(event.keyCode === 13 && !event.shiftKey) {
         textarea.disabled = true;
-        
         const postRequestOptions = {
             method: "POST",
             headers: {
@@ -85,13 +78,11 @@ document.getElementById("newmessage").addEventListener("keypress", (event) => {
             .then(msg => {
                 appendMessage(msg);
                 scrollMessages();
+
                 // reset the textarea
                 textarea.value="";
                 textarea.disabled = false;
                 textarea.focus();
-            })
-            .catch(err=>{
-                console.log(err);
             })
     }
 })
