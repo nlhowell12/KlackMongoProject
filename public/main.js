@@ -13,8 +13,12 @@ if(name.length===0) name = "Anon-" + Math.floor(Math.random()*1000);
 // add the sender and text of one new message to the bottom of the message list
 function appendMessage(msg) {
     messages.push(msg);
+    //Time the msg was sent 
+    var d = new Date(msg.timestamp);
+     // expected output: "7/25/2016, 1:35:07 PM"
+
     messagesDiv.innerHTML +=
-      `<div class="message"><strong>${msg.sender}</strong><br>${msg.message}</div>`;
+      `<div class="message"><strong>${msg.sender}</strong>(${d.toLocaleString()}) : <br>${msg.message}</div>`;
 }
 
 // redraw the entire list of users, indicating active/inactive
@@ -53,7 +57,7 @@ function fetchMessages() {
                     shouldDing = true;
                 }
             })
-            
+
             if(shouldScroll && shouldDing) scrollMessages();
             if(shouldDing) ding.play();
 

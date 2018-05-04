@@ -3,9 +3,8 @@
 //2 - Your app defines a Message model with an appropriate schema. -- Done
 //3 - Every posted message to klack gets stored as an instance of the Message model. 
 //4 - When the Node.js server for klack is exited and restarted, message history should be preserved.
-//5 - This criterion is linked to a Learning OutcomeLast active times for users 
-//    (used to show which users have been recently active) should also be based 
-//    on the message history in MongoDB and should persist across restarts of the server.
+//5 - Last active times for users (used to show which users have been recently active) should 
+//   also be based on the message history in MongoDB and should persist across restarts of the server.
 
 const express = require('express')
 const querystring = require('querystring');
@@ -52,7 +51,7 @@ function userSortFn(a, b) {
 }
 
 app.get("/messages", (request, response) => {
-    // List of all messages
+   
     let messages = []
     const now = Date.now();
     const requireActiveSince = now - (15*1000) // consider inactive after 15 seconds
@@ -76,7 +75,6 @@ app.get("/messages", (request, response) => {
 app.post("/messages", (request, response) => {
     // add a timestamp to each incoming message.
     request.body.timestamp = Date.now()
-
     //Create an instance of Message model
     var message = new Message({
         sender: request.body.sender,
