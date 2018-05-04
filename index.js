@@ -52,17 +52,13 @@ function userSortFn(a, b) {
 app.get("/messages", (request, response) => {
     let messages = []
     const now = Date.now();
-    const requireActiveSince = now - (15 * 1000) // consider inactive after 15 seconds
-    //if (request.query.for){
+    const requireActiveSince = now - (15 * 1000) // consider inactive after 15 seconds 
     users[request.query.for] = now;
-    //}  
-    //console.log("request.query.for 1--", request.query.for);
     // Get message from database
     Message.find().sort({
         timestamp: 'asc'
     }).exec(function (err, msgs) {
-        msgs.forEach(msg => {
-            console.log("in foreach - msg.name: ", msg);
+        msgs.forEach(msg => {  
             messages.push(msg);
             if (!users[msg.sender]) {
                 users[msg.sender] = msg.timestamp
@@ -70,19 +66,16 @@ app.get("/messages", (request, response) => {
                 users[msg.sender] = msg.timestamp
             }
         });
-        //console.log(users);
-        let usersSimple = Object.keys(users).map((x) => {
-            //console.log(x)
+        
+        let usersSimple = Object.keys(users).map((x) => { 
             return ({
                 name: x,
                 active: (users[x] > requireActiveSince)
             })
         })
-        //console.log(usersSimple);
+       
         usersSimple.sort(userSortFn);
         usersSimple.filter((a) => (a.name !== request.query.for))
-        //users[request.query.for] = now;
-        // console.log("usersSimple after sort :", usersSimple);
         lastMsgTimestamp = messages[messages.length - 1];
         response.send({
             messages: messages.slice(-40),
@@ -95,7 +88,7 @@ app.post("/messages", (request, response) => {
     // add a timestamp to each incoming message.
     request.body.timestamp = Date.now()
     users[request.body.sender] = request.body.timestamp;
-    // console.log("users---",users);
+    
     //Create an instance of Message model
     
     var message = new Message({
