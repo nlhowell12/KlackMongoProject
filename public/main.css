@@ -41,17 +41,10 @@ h1 {background: url('klack.png') no-repeat; background-size: contain; padding-le
 }
 
 @media only screen and (max-width: 580px) {
-    body {
-        background-color: lightblue;
-    }
 
     #userpane h1 {
         background: url('hamburger-menu-icon.png');
         background-repeat: no-repeat;
         background-size: contain;
-    }
-
-    #users {
-        background-color: rgb(119, 119, 119);
     }
 }
