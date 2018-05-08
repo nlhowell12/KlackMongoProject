@@ -67,37 +67,9 @@ function fetchMessages() {
             setTimeout(fetchMessages, 5000);
         })
 }
-
-document.getElementById("newmessage").addEventListener("keypress", (event) => {
-    // if the key pressed was enter (and not shift enter), post the message.
-    if(event.keyCode === 13 && !event.shiftKey) {
-        textarea.disabled = true;
-        
-        const postRequestOptions = {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({sender: name, message: textarea.value}),
-        }
-        fetch("/messages", postRequestOptions)
-            .then(response => response.json())
-            .then(msg => {
-                appendMessage(msg);
-                scrollMessages();
-                // reset the textarea
-                textarea.value="";
-                textarea.disabled = false;
-                textarea.focus();
-            })
-            .catch(err=>{
-                console.log(err);
-            })
-    }
-});
-document.getElementById("send-icon").addEventListener("click", (event) => {
+function sendMessage(){
     textarea.disabled = true;
-    
+        
     const postRequestOptions = {
         method: "POST",
         headers: {
@@ -118,6 +90,16 @@ document.getElementById("send-icon").addEventListener("click", (event) => {
         .catch(err=>{
             console.log(err);
         })
+}
+document.getElementById("newmessage").addEventListener("keypress", (event) => {
+    // if the key pressed was enter (and not shift enter), post the message.
+    if(event.keyCode === 13 && !event.shiftKey) {
+      sendMessage();
+    }
 });
+document.getElementById("send-icon").addEventListener("click", (event) => {
+    sendMessage();
+    });
+
 // call on startup to populate the messages and start the polling loop
 fetchMessages();
