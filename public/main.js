@@ -16,25 +16,33 @@ hamburger.addEventListener('click', function(){
 
 
 // this will be the list of all messages displayed on the client
-let messages = [ { timestamp: 0 } ];
+let messages = [{
+    timestamp: 0
+}];
 
 let name = window.prompt("Enter your name");
 // if they didn't type anything at the prompt, make up a random name
-if(name === null || name.length === 0) name = "Anon-" + Math.floor(Math.random()*1000);
+if (name === null || name.length === 0) name = "Anon-" + Math.floor(Math.random() * 1000);
 
 // add the sender and text of one new message to the bottom of the message list
-function appendMessage(msg) {
+function appendMessage(msg, pics) {
     messages.push(msg);
     //Time the msg was sent 
     var d = new Date(msg.timestamp);
-     // expected output: "7/25/2016, 1:35:07 PM"
-
-    messagesDiv.innerHTML +=
-      `<div class="message"><strong>${msg.sender}</strong>(${d.toLocaleString()}) : <br>${msg.message}</div>`;
+    // expected output: "7/25/2016, 1:35:07 PM"
+    // console.log( pics[msg.sender] )
+    if (pics[msg.sender] !== undefined) {
+        messagesDiv.innerHTML +=
+            `<div class="message"><img src="${pics[msg.sender]}" class="profilePic"><strong>${msg.sender}</strong>(${d.toLocaleString()}) :<br>${msg.message}</div>`;
+    } else {
+        messagesDiv.innerHTML +=
+            `<div class="message"><strong>${msg.sender}</strong>(${d.toLocaleString()}) :<br>${msg.message}</div>`;;
+    }
 }
 
 // redraw the entire list of users, indicating active/inactive
 function listUsers(users) {
+
     let userStrings = users.map((user) =>
         (user.active ? `<span class="active"><span class="cyan">&#9679;</span> ${user.name}</span>` : `<span class="inactive">&#9675; ${user.name}</span>`)
     );
@@ -52,6 +60,7 @@ function scrollMessages() {
 }
 
 function fetchMessages() {
+
     fetch("/messages?for=" + encodeURIComponent(name))
         .then(response => response.json())
         .then(data => {
@@ -63,53 +72,70 @@ function fetchMessages() {
             listUsers(data.users);
 
             // examine all received messages, add those newer than the last one shown
-            data.messages.forEach(msg => {
-                if(msg.timestamp > messages[messages.length - 1].timestamp) {
-                    appendMessage(msg);
+            for (let i = 0; i < data.messages.length; i++) {
+                let msg = data.messages[i];
+                if (msg.timestamp > messages[messages.length - 1].timestamp) {
+                    appendMessage(msg, data.pics);
                     shouldDing = true;
                 }
-            })
+            }
 
-            if(shouldScroll && shouldDing) scrollMessages();
-            if(shouldDing) ding.play();
+            // OLD IMPLEMENTATION
+            // data.messages.forEach(msg => {
+            //     if(msg.timestamp > messages[messages.length - 1].timestamp) {
+            //         appendMessage(msg);
+            //         shouldDing = true;
+            //         // console.log(JSON.stringify(data.pics));
+            //     }
+            // })
+
+            if (shouldScroll && shouldDing) scrollMessages();
+            // if (shouldDing) ding.play();
 
             // poll again after waiting 5 seconds
             setTimeout(fetchMessages, 5000);
         })
 }
-function sendMessage(){
+
+function sendMessage() {
     textarea.disabled = true;
-        
+
     const postRequestOptions = {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify({sender: name, message: textarea.value}),
+        body: JSON.stringify({
+            sender: name,
+            message: textarea.value
+        }),
     }
     fetch("/messages", postRequestOptions)
         .then(response => response.json())
-        .then(msg => {
-            appendMessage(msg);
+        .then(data => {
+            appendMessage(data.messages, data.pics);
             scrollMessages();
             // reset the textarea
-            textarea.value="";
+            textarea.value = "";
             textarea.disabled = false;
             textarea.focus();
         })
-        .catch(err=>{
+        .catch(err => {
             console.log(err);
         })
 }
 document.getElementById("newmessage").addEventListener("keypress", (event) => {
     // if the key pressed was enter (and not shift enter), post the message.
-    if(event.keyCode === 13 && !event.shiftKey) {
-      sendMessage();
+    if (event.keyCode === 13 && !event.shiftKey) {
+        sendMessage();
     }
 });
 document.getElementById("send-icon").addEventListener("click", (event) => {
     sendMessage();
-    });
+});
 
 // call on startup to populate the messages and start the polling loop
 fetchMessages();
+
+// adds a hidden field to the upload form with the user's name (this is required to link them later)
+document.getElementById("uploadForm").innerHTML += `<input type="hidden" value="${name}" name="user_id" />`
