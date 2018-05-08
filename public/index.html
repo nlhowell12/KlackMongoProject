@@ -14,15 +14,20 @@
     <div id="userpane">
         <h1>klack</h1>
         <div id="users"></div>
+        <div id="uploadDiv">
+            <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="fileToUpload" id="fileToUpload">
+                <input type="submit" value="Upload Image" name="submit">
+            </form>
+        </div>
     </div>
-    
+
     <div id="mainpane">
         <div id="messageslist">
             <div id="messageheader">This is the very beginning of the conversation.</div>
         </div>
         <button id="send-icon"></button>
         <button id="emoji-icon"></button>
-        
         <textarea id="newmessage" rows=3 cols=80 placeholder="Type your message here" autofocus></textarea>
     </div>
     <script src="main.js"></script>
