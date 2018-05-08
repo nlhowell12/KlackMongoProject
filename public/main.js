@@ -8,7 +8,7 @@ let messages = [ { timestamp: 0 } ];
 
 let name = window.prompt("Enter your name");
 // if they didn't type anything at the prompt, make up a random name
-if(name.length===0) name = "Anon-" + Math.floor(Math.random()*1000);
+if(name === null || name.length === 0) name = "Anon-" + Math.floor(Math.random()*1000);
 
 // add the sender and text of one new message to the bottom of the message list
 function appendMessage(msg) {
@@ -94,7 +94,30 @@ document.getElementById("newmessage").addEventListener("keypress", (event) => {
                 console.log(err);
             })
     }
-})
-
+});
+document.getElementById("send-icon").addEventListener("click", (event) => {
+    textarea.disabled = true;
+    
+    const postRequestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({sender: name, message: textarea.value}),
+    }
+    fetch("/messages", postRequestOptions)
+        .then(response => response.json())
+        .then(msg => {
+            appendMessage(msg);
+            scrollMessages();
+            // reset the textarea
+            textarea.value="";
+            textarea.disabled = false;
+            textarea.focus();
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+});
 // call on startup to populate the messages and start the polling loop
 fetchMessages();
