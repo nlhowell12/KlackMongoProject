@@ -1,21 +1,30 @@
 html {
     height: 100%;
     margin: 0;
+
 }
 
-body {
+
+  
+  body {
+
     font-family: sans-serif;
     height: 100%;
     display: flex;
     margin: 0;
+
 }
 
-#userpane {
+
+  
+  #userpane {
+
     background: #00366f;
     width: 200px;
     height: 100%;
     padding: 0 20px;
     color: white;
+
 }
 
 #users {
@@ -58,13 +67,34 @@ body {
     position: relative;
 }
 
-h1 {
+
+  
+  .active {
+    color: lightgray;
+  }
+  
+  .inactive {
+    color: darkgray;
+  }
+  
+  .cyan {
+    color: cyan;
+  }
+  
+  #mainpane {
+    width: 100%;
+    position: relative;
+  }
+  
+  h1 {
+
     background: url('klack.png') no-repeat;
     background-size: contain;
     padding-left: 60px;
     color: white;
     font-family: 'Open Sans';
     font-size: 40px;
+
 }
 
 #messageslist {
@@ -88,7 +118,29 @@ h1 {
     background: #f8f8f8;
 }
 
-#newmessage {
+
+  
+  #messageslist {
+    height: calc(100% - 103px);
+    overflow-y: scroll;
+    overflow-x: wrap;
+  }
+  
+  #messageheader {
+    font-size: 20px;
+    padding: 20px;
+  }
+  
+  .message {
+    padding: 5px 20px;
+  }
+  
+  .message:hover {
+    background: #f8f8f8;
+  }
+  
+  #newmessage {
+
     position: absolute;
     bottom: 30px;
     border-radius: 10px;
@@ -96,14 +148,18 @@ h1 {
     padding: 5px;
     width: calc(100% - 60px);
     margin: 20px;
+
 }
 
 #newmessage:focus {
     border: 2px solid slategray;
     outline: none;
 }
+ 
 
-#emoji-icon {
+  
+  #emoji-icon {
+
     position: relative;
     left: -50px;
     top: 10px;
@@ -113,9 +169,12 @@ h1 {
     height: 40px;
     width: 40px;
     background: url(./emoji-face.png) no-repeat;
+
 }
 
-#send-icon {
+  
+  #send-icon {
+
     position: relative;
     left: -50px;
     top: 10px;
@@ -125,16 +184,79 @@ h1 {
     height: 40px;
     width: 40px;
     background: url(./blue-arrow.png) no-repeat;
+
 }
 
 #emoji-icon:hover {
     background: url(./emoji-face-activated.png) no-repeat;
 }
 
-@media only screen and (max-width: 580px) {
-    #userpane h1 {
-        background: url('hamburger-menu-icon.png');
-        background-repeat: no-repeat;
-        background-size: contain;
+
+  
+  #emoji-icon:hover {
+    background: url(./emoji-face-activated.png) no-repeat;
+  }
+  
+
+
+  /* //FOR MOBILE */
+  @media only screen and (max-width: 580px) {
+    body {
+      flex-direction: column;
     }
-}
+
+    #userpane h1 {
+      background: url('hamburger-menu-icon.png');
+      background-repeat: no-repeat;
+      background-size: contain;
+      -webkit-margin-before: 10px;
+    }
+    #userpane {
+      width: 100vw;
+      height: 10vh;
+    }
+    #users {
+      display: none;
+      background-color: #00366f;
+      position: absolute;
+      padding-left: 5vw;
+      padding-top: 2vh;
+      padding-bottom: 2vh;
+      overflow: auto;
+      height: 50vh;
+    }
+    #mainpane {
+      z-index: -10;
+    }
+    #newmessage {
+      position: static;
+    }
+    textarea {
+      width: 70vw;
+    }
+    #text {
+      display: flex;
+      width: 100vw;
+      height: 12vh;
+      position: fixed;
+      left: 0px;
+      bottom: 0px;
+      background: lightgray;
+    }
+    #send-icon {
+      top: 4vh;
+      left: .5vw;
+      height: 40px;
+      width: 15vw;
+    }
+    #emoji-icon {
+      top: 4vh;
+      left: .5vw;
+      height: 40px;
+      width: 15vw;
+    }
+    #messageslist {
+      margin-bottom: 12vh;
+    }
+  }
+  

@@ -2,6 +2,18 @@ const userList = document.getElementById("users");
 const messagesDiv = document.getElementById("messageslist");
 const textarea = document.getElementById("newmessage");
 const ding = new Audio('typewriter_ding.m4a');
+const hamburger = document.getElementById('hamburger');
+
+
+hamburger.addEventListener('click', function(){
+    if (userList.style.display === 'none') {
+        userList.style.display = 'block'    
+    }
+    else {
+        userList.style.display = 'none'
+    }
+    });
+
 
 // this will be the list of all messages displayed on the client
 let messages = [{
@@ -30,7 +42,7 @@ function appendMessage(msg, pics) {
 
 // redraw the entire list of users, indicating active/inactive
 function listUsers(users) {
-    // console.log(users);
+
     let userStrings = users.map((user) =>
         (user.active ? `<span class="active"><span class="cyan">&#9679;</span> ${user.name}</span>` : `<span class="inactive">&#9675; ${user.name}</span>`)
     );
@@ -48,7 +60,7 @@ function scrollMessages() {
 }
 
 function fetchMessages() {
-    // console.log("name--",name);
+
     fetch("/messages?for=" + encodeURIComponent(name))
         .then(response => response.json())
         .then(data => {
