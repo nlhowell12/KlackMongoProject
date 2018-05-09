@@ -187,7 +187,7 @@ svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#object
     }
 
     #userpane h1 {
-      background: url('hamburger-menu-icon.png');
+      background: url('hamburger.png');
       background-repeat: no-repeat;
       background-size: contain;
       -webkit-margin-before: 10px;
@@ -197,15 +197,18 @@ svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#object
       height: 10vh;
     }
     #users {
-      display: none;
-      background-color: #00366f;
-      position: absolute;
-      padding-left: 5vw;
-      padding-top: 2vh;
-      padding-bottom: 2vh;
-      overflow: auto;
-      height: 50vh;
-      width: 50vw;
+        display: none;
+        background-color: #00366f;
+        position: absolute;
+        padding-left: 5vw;
+        padding-top: 2vh;
+        padding-bottom: 2vh;
+        overflow: auto;
+        height: 50vh;
+        width: 50vw;
+        left: 0px;
+        top: 10vh;
+        border-top: 2px solid grey;
     }
     #mainpane {
       z-index: -10;
