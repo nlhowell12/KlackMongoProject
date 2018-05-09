@@ -243,5 +243,15 @@ svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#object
     #messageslist {
       margin-bottom: 12vh;
     }
+
+    #uploadDiv {
+        position: absolute;
+        width: 160px;
+        height: 50px;
+        top: 20px;
+        right: 0px;
+        bottom: initial;
+        left: initial;
+    }
   }
   
