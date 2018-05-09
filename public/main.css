@@ -85,30 +85,14 @@ h1 {
   color: white;
   font-family: 'Open Sans';
   font-size: 40px;
-
 }
 
-#messageslist {
-    height: calc(100% - 103px);
-    overflow-y: scroll;
-    overflow-x: wrap;
+#text {
+    width: 75vw;
+    margin-top: 50px;
+    height: 20px;
+    background-color: transparent;
 }
-
-#messageheader {
-    font-size: 20px;
-    padding: 20px;
-}
-
-.message {
-    padding: 5px 20px;
-    vertical-align: middle;
-    line-height: 25px;
-}
-
-.message:hover {
-    background: #f8f8f8;
-}
-
 
   
   #messageslist {
@@ -131,12 +115,11 @@ h1 {
   }
   
   #newmessage {
-
     position: absolute;
     border-radius: 10px;
     border: 2px solid lightgray;
     padding: 5px;
-    width: calc(100% - 60px);
+    width: 50%;
     margin: 20px;
   }
 
@@ -144,15 +127,6 @@ h1 {
   background: #f8f8f8;
 }
 
-#newmessage {
-  position: absolute;
-  bottom: 30px;
-  border-radius: 10px;
-  border: 2px solid lightgray;
-  padding: 5px;
-  width: calc(100% - 60px);
-  margin: 20px;
-}
 
   #send-icon {
 
@@ -176,9 +150,6 @@ svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#object
   bottom: -55px;
 
 }
-
-  
-
 
   /* //FOR MOBILE */
   @media only screen and (max-width: 580px) {
@@ -208,17 +179,16 @@ svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#object
         width: 50vw;
         left: 0px;
         top: 10vh;
-        border-top: 2px solid grey;
+        border-top: 2px solid #003690;
     }
+
     #mainpane {
       z-index: -10;
     }
     #newmessage {
       position: static;
     }
-    textarea {
-      width: 70vw;
-    }
+
     #text {
       display: flex;
       width: 100vw;
@@ -228,18 +198,15 @@ svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#object
       bottom: 0px;
       background: lightgray;
     }
+
     #send-icon {
-      top: 4vh;
-      left: .5vw;
+      top: 4.5vh;
+      left: 20vw;
       height: 40px;
       width: 15vw;
+    
     }
-    #emoji-icon {
-      top: 4vh;
-      left: .5vw;
-      height: 40px;
-      width: 15vw;
-    }
+  
     #messageslist {
       margin-bottom: 12vh;
     }
@@ -253,5 +220,11 @@ svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#object
         bottom: initial;
         left: initial;
     }
+
+    /* No emoji option for mobile. */
+svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#objects) {
+    display: none;
+  }
+
   }
   
