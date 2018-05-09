@@ -224,6 +224,7 @@ html {
       padding-bottom: 2vh;
       overflow: auto;
       height: 50vh;
+      width: 50vw;
     }
     #mainpane {
       z-index: -10;
