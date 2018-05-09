@@ -41,6 +41,13 @@ var messageSchema = new Schema({
 // Compile a Message model from the schema
 var Message = mongoose.model('Message', messageSchema);
 
+// user schema for profile pics and stuff
+var userSchema = new Schema({
+    name: String,
+    pic: String
+});
+var User = mongoose.model('User', userSchema);
+
 function userSortFn(a, b) {
     var nameA = a.name.toUpperCase(); // ignore upper and lowercase
     var nameB = b.name.toUpperCase(); // ignore upper and lowercase
@@ -126,6 +133,25 @@ app.post('/upload', upload.single('fileToUpload'), function (req, res) {
     // console.log(req.file.filename);
     // console.log(JSON.stringify(profilePics));
     res.redirect('/');
+})
+
+app.post('/user', function(req, res) {
+    
+    var user = new User({
+        name: req.body.name,
+        pic: req.body.pic
+    });
+    user.save()
+        .then(data => {
+            console.log('user saved to the database:', data);
+        })
+        .catch(err => {
+            console.log('Unable to save to database');
+        });
+
+    res.send({
+        say: "user saved to the database: " + user
+    })
 })
 
 app.listen(PORT, () => {

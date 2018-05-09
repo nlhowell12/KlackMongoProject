@@ -23,9 +23,33 @@ let messages = [{
     timestamp: 0
 }];
 
-let name = window.prompt("Enter your name");
-// if they didn't type anything at the prompt, make up a random name
-if (name === null || name.length === 0) name = "Anon-" + Math.floor(Math.random() * 1000);
+let name = "";
+
+function determineName() {
+    name = window.prompt("Enter your name");
+    if (name === null || name.length === 0) name = "Anon-" + Math.floor(Math.random() * 1000);
+
+    const postRequestOptions = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            name: name,
+            pic: "none"
+        }),
+    }
+
+    fetch("/user", postRequestOptions)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.say);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+}
+determineName();
 
 // add the sender and text of one new message to the bottom of the message list
 function appendMessage(msg, pics) {
