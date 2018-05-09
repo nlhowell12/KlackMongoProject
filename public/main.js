@@ -4,6 +4,9 @@ const textarea = document.getElementById("newmessage");
 const ding = new Audio('typewriter_ding.m4a');
 const hamburger = document.getElementById('hamburger');
 
+// text to emoji converter library
+const emoji = new EmojiConvertor();
+
 
 hamburger.addEventListener('click', function(){
     if (userList.style.display === 'none') {
@@ -99,7 +102,8 @@ function fetchMessages() {
 
 function sendMessage() {
     textarea.disabled = true;
-
+    // text to emoji convert
+    textarea.value = emoji.replace_colons(textarea.value); 
     const postRequestOptions = {
         method: "POST",
         headers: {
