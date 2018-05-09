@@ -1,99 +1,90 @@
 html {
-    height: 100%;
-    margin: 0;
-
+  height: 100%;
+  margin: 0;
 }
 
-
-  
-  body {
-
-    font-family: sans-serif;
-    height: 100%;
-    display: flex;
-    margin: 0;
+body {
+  font-family: sans-serif;
+  height: 100%;
+  display: flex;
+  margin: 0;
 
 }
+#userpane {
 
-
-  
-  #userpane {
-
-    background: #00366f;
-    width: 200px;
-    height: 100%;
-    padding: 0 20px;
-    color: white;
+  background: #00366f;
+  width: 200px;
+  height: 100%;
+  padding: 0 20px;
+  color: white;
 
 }
 
 #users {
-    overflow-y: scroll;
-    height: calc(100% - 250px);
+  overflow-y: scroll;
+  height: calc(100% - 250px);
 }
 
 #uploadDiv {
-    position: absolute;
-    bottom: 0px;
-    left: 0px;
-    /* background-color: blue; */
-    height: 125px;
-    width: 200px;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  /* background-color: blue; */
+  height: 125px;
+  width: 200px;
 }
 
 .profilePic {
-    object-fit: cover;
-    height: 50px;
-    width: 50px;
-    border-radius: 25px;
-    margin-right: 5px;
-    background-color: blueviolet;
+  object-fit: cover;
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+  margin-right: 5px;
+  background-color: blueviolet;
 }
 
 .active {
-    color: lightgray;
+  color: lightgray;
 }
 
 .inactive {
-    color: darkgray;
+  color: darkgray;
 }
 
 .cyan {
-    color: cyan;
+  color: cyan;
 }
 
 #mainpane {
-    width: 100%;
-    position: relative;
+  width: 100%;
+  position: relative;
+}
+  
+.active {
+  color: lightgray;
 }
 
+.inactive {
+  color: darkgray;
+}
 
-  
-  .active {
-    color: lightgray;
-  }
-  
-  .inactive {
-    color: darkgray;
-  }
-  
-  .cyan {
-    color: cyan;
-  }
-  
-  #mainpane {
-    width: 100%;
-    position: relative;
-  }
-  
-  h1 {
+.cyan {
+  color: cyan;
+}
 
-    background: url('klack.png') no-repeat;
-    background-size: contain;
-    padding-left: 60px;
-    color: white;
-    font-family: 'Open Sans';
-    font-size: 40px;
+#mainpane {
+  width: 100%;
+  position: relative;
+}
+
+h1 {
+
+  background: url('klack.png') no-repeat;
+  background-size: contain;
+  padding-left: 60px;
+  color: white;
+  font-family: 'Open Sans';
+  font-size: 40px;
 
 }
 
@@ -120,83 +111,76 @@ html {
 
 
   
-  #messageslist {
-    height: calc(100% - 103px);
-    overflow-y: scroll;
-    overflow-x: wrap;
-  }
-  
-  #messageheader {
-    font-size: 20px;
-    padding: 20px;
-  }
-  
-  .message {
-    padding: 5px 20px;
-  }
-  
-  .message:hover {
-    background: #f8f8f8;
-  }
-  
-  #newmessage {
+#messageslist {
+  height: calc(100% - 103px);
+  overflow-y: scroll;
+  overflow-x: wrap;
+}
 
-    position: absolute;
-    bottom: 30px;
-    border-radius: 10px;
-    border: 2px solid lightgray;
-    padding: 5px;
-    width: calc(100% - 60px);
-    margin: 20px;
+#messageheader {
+  font-size: 20px;
+  padding: 20px;
+}
 
+.message {
+  padding: 5px 20px;
+}
+
+.message:hover {
+  background: #f8f8f8;
+}
+
+#newmessage {
+  position: absolute;
+  bottom: 30px;
+  border-radius: 10px;
+  border: 2px solid lightgray;
+  padding: 5px;
+  width: calc(100% - 60px);
+  margin: 20px;
 }
 
 #newmessage:focus {
-    border: 2px solid slategray;
-    outline: none;
-}
- 
-
-  
-  #emoji-icon {
-
-    position: relative;
-    left: -50px;
-    top: 10px;
-    z-index: 1;
-    float: right;
-    border: none;
-    height: 40px;
-    width: 40px;
-    background: url(./emoji-face.png) no-repeat;
-
+  border: 2px solid slategray;
+  outline: none;
 }
 
-  
-  #send-icon {
+#emoji-icon {
+  position: relative;
+  left: -50px;
+  top: 10px;
+  z-index: 1;
+  float: right;
+  border: none;
+  height: 40px;
+  width: 40px;
+  background: url(./emoji-face.png) no-repeat;
+}
 
-    position: relative;
-    left: -50px;
-    top: 10px;
-    z-index: 1;
-    float: right;
-    border: none;
-    height: 40px;
-    width: 40px;
-    background: url(./blue-arrow.png) no-repeat;
+#send-icon {
+
+  position: relative;
+  left: -50px;
+  top: 10px;
+  z-index: 1;
+  float: right;
+  border: none;
+  height: 40px;
+  width: 40px;
+  background: url(./blue-arrow.png) no-repeat;
 
 }
 
 #emoji-icon:hover {
-    background: url(./emoji-face-activated.png) no-repeat;
+  background: url(./emoji-face-activated.png) no-repeat;
 }
 
 
-  
-  #emoji-icon:hover {
-    background: url(./emoji-face-activated.png) no-repeat;
-  }
-  
+
+#emoji-icon:hover {
+  background: url(./emoji-face-activated.png) no-repeat;
+}
+
 
 
   /* //FOR MOBILE */
