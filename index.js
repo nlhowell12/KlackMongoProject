@@ -1,7 +1,6 @@
 const express = require('express')
 const querystring = require('querystring');
 const mongoose = require('mongoose');
-var emoji = require('node-emoji');
 const multer = require('multer');
 const fs = require('fs');
 

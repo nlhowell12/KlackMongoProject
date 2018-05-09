@@ -121,7 +121,7 @@ html {
 
   
   #messageslist {
-    height: calc(100% - 103px);
+    height: calc(100% - 203px);
     overflow-y: scroll;
     overflow-x: wrap;
   }
@@ -142,7 +142,6 @@ html {
   #newmessage {
 
     position: absolute;
-    bottom: 30px;
     border-radius: 10px;
     border: 2px solid lightgray;
     padding: 5px;
@@ -155,29 +154,11 @@ html {
     border: 2px solid slategray;
     outline: none;
 }
- 
 
-  
-  #emoji-icon {
-
-    position: relative;
-    left: -50px;
-    top: 10px;
-    z-index: 1;
-    float: right;
-    border: none;
-    height: 40px;
-    width: 40px;
-    background: url(./emoji-face.png) no-repeat;
-
-}
-
-  
   #send-icon {
 
     position: relative;
-    left: -50px;
-    top: 10px;
+    top: 30px;
     z-index: 1;
     float: right;
     border: none;
@@ -186,16 +167,17 @@ html {
     background: url(./blue-arrow.png) no-repeat;
 
 }
+/* styling for emoji icon */
+svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#objects) {
 
-#emoji-icon:hover {
-    background: url(./emoji-face-activated.png) no-repeat;
+  width: 36px;
+  height: 36px;
+  position: absolute;
+  left: -75px;
+  bottom: -55px;
+
 }
 
-
-  
-  #emoji-icon:hover {
-    background: url(./emoji-face-activated.png) no-repeat;
-  }
   
 
 
