@@ -67,6 +67,17 @@ app.get("/messages", (request, response) => {
     const requireActiveSince = now - (15 * 1000) // consider inactive after 15 seconds 
     users[request.query.for] = now;
     // Get message from database
+
+    //make array of all users and their pics
+    let allUsers = []
+    User.find().sort({
+        timestamp: 'asc'
+    }).exec(function (err, users) {
+        users.forEach(user => {
+            allUsers.push(user);
+        })
+    });
+
     Message.find().sort({
         timestamp: 'asc'
     }).exec(function (err, msgs) {
@@ -92,7 +103,7 @@ app.get("/messages", (request, response) => {
         response.send({
             messages: messages.slice(-40),
             users: usersSimple,
-            pics: profilePics
+            pics: allUsers
         })
     });
 })
@@ -118,36 +129,58 @@ app.post("/messages", (request, response) => {
             console.log('Unable to save to database');
         });
 
-    // create a new list of users with a flag indicating whether they have been active recently
-    response.status(201)
-    response.send({
-        messages: request.body,
-        pics: profilePics
-    })
+    // make array of all the users and their pics
+    let allUsers = []
+    User.find().sort({
+        timestamp: 'asc'
+    }).exec(function (err, users) {
+        users.forEach(user => {
+            allUsers.push(user);
+        })
+        // console.log("allUsers: " + allUsers);
+        response.status(201)
+        response.send({
+            messages: request.body,
+            pics: allUsers
+        })
+    });
 })
 
 // handles pic uploading
 app.post('/upload', upload.single('fileToUpload'), function (req, res) {
     profilePics[req.body.user_id] = req.file.filename;
-    // console.log(req.body.user_id);
-    // console.log(req.file.filename);
-    // console.log(JSON.stringify(profilePics));
+    User.update({
+            name: req.body.user_id
+        }, {
+            $set: {
+                pic: req.file.filename
+            }
+        },
+        function (err, numAffected) {
+            console.log("User created", numAffected);
+        }
+    );
     res.redirect('/');
 })
 
-app.post('/user', function(req, res) {
-    
+app.post('/user', function (req, res) {
+
     var user = new User({
         name: req.body.name,
         pic: req.body.pic
     });
 
     //If the user already exist in the DB the user will not be created else a new user will be created
-    User.update(
-        {name: req.body.name}, 
-        {$setOnInsert: user}, 
-        {upsert: true}, 
-        function(err, numAffected) { console.log("User created",numAffected); }
+    User.update({
+            name: req.body.name
+        }, {
+            $setOnInsert: user
+        }, {
+            upsert: true
+        },
+        function (err, numAffected) {
+            console.log("User created", numAffected);
+        }
     );
 
     res.send({

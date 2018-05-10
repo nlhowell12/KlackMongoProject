@@ -27,7 +27,7 @@ let name = "";
 
 function determineName() {
     name = window.prompt("Enter your name");
-    if (name === null || name.length === 0) name = "Anon-" + Math.floor(Math.random() * 1000);
+    if (name === null || name.length === 0) name = "Anonymous";
 
     const postRequestOptions = {
         method: "POST",
@@ -58,9 +58,18 @@ function appendMessage(msg, pics) {
     var d = new Date(msg.timestamp);
     // expected output: "7/25/2016, 1:35:07 PM"
     // console.log( pics[msg.sender] )
-    if (pics[msg.sender] !== undefined) {
+
+    // find profile pic of sender
+    var userandpic = pics.find(function(element) {
+        if (element.name === msg.sender) {
+            return element.pic;
+        }
+    })
+    // console.log(userandpic);
+
+    if (userandpic.pic !== "none") {
         messagesDiv.innerHTML +=
-            `<div class="message"><img src="${pics[msg.sender]}" class="profilePic"><strong>${msg.sender}</strong>(${d.toLocaleString()}) :<br>${msg.message}</div>`;
+            `<div class="message"><img src="${userandpic.pic}" class="profilePic"><strong>${msg.sender}</strong>(${d.toLocaleString()}) :<br>${msg.message}</div>`;
     } else {
         messagesDiv.innerHTML +=
             `<div class="message"><strong>${msg.sender}</strong>(${d.toLocaleString()}) :<br>${msg.message}</div>`;;
