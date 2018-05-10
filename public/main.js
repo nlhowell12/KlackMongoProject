@@ -28,7 +28,7 @@ let name = "";
 function determineName() {
     name = window.prompt("Enter your name");
     if (name === null || name.length === 0) name = "Anonymous";
-
+    console.log(name)
     const postRequestOptions = {
         method: "POST",
         headers: {
@@ -175,4 +175,4 @@ document.getElementById("send-icon").addEventListener("click", (event) => {
 fetchMessages();
 
 // adds a hidden field to the upload form with the user's name (this is required to link them later)
-document.getElementById("uploadForm").innerHTML += `<input type="hidden" value="${name}" name="user_id" />`
+document.getElementById("uploadForm").innerHTML += `<input type="hidden" value="${name}" name="user_id" />`;
