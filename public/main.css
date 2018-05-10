@@ -108,6 +108,8 @@ h1 {
   
   .message {
     padding: 5px 20px;
+    font-size: 22px;
+    margin-bottom: 10px;
   }
   
   .message:hover {
@@ -219,6 +221,14 @@ svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#object
         bottom: initial;
         left: initial;
     }
+
+
+    .message {
+      padding: 5px 20px;
+      font-size: 21px;
+      margin-bottom: 10px;
+    }
+
 
     #messageslist {
       word-wrap: break-word;
