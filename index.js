@@ -4,9 +4,7 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const fs = require('fs');
 
-// const upload = multer({
-//     dest: "./public/uploads"
-// })
+//User can upload image types - (jpg|jpeg|png|gif)
 var storage = multer.diskStorage({
   
     destination: (req, file, cb) => {
@@ -20,6 +18,7 @@ var storage = multer.diskStorage({
     }
   });
   const upload = multer({storage: storage});
+  
 // object of names and their respective pic filenames
 let profilePics = {
     "test": "test"
