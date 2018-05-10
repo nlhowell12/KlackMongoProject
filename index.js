@@ -4,10 +4,22 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const fs = require('fs');
 
-const upload = multer({
-    dest: "./public/uploads"
-})
-
+// const upload = multer({
+//     dest: "./public/uploads"
+// })
+var storage = multer.diskStorage({
+  
+    destination: (req, file, cb) => {
+      cb(null, 'public/uploads/') 
+    },
+    filename: (req, file, cb) => {
+      if (!file.originalname.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
+        return cb(new Error('Only image files are allowed!'), false);
+      }
+      cb(null,Date.now()  + '-' + file.originalname)
+    }
+  });
+  const upload = multer({storage: storage});
 // object of names and their respective pic filenames
 let profilePics = {
     "test": "test"
