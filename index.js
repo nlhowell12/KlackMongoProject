@@ -141,13 +141,14 @@ app.post('/user', function(req, res) {
         name: req.body.name,
         pic: req.body.pic
     });
-    user.save()
-        .then(data => {
-            console.log('user saved to the database:', data);
-        })
-        .catch(err => {
-            console.log('Unable to save to database');
-        });
+
+    //If the user already exist in the DB the user will not be created else a new user will be created
+    User.update(
+        {name: req.body.name}, 
+        {$setOnInsert: user}, 
+        {upsert: true}, 
+        function(err, numAffected) { console.log("User created",numAffected); }
+    );
 
     res.send({
         say: "user saved to the database: " + user
