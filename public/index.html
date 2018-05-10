@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
@@ -12,13 +12,13 @@
 
 <body>
     <div id="userpane">
-            <div id="uploadDiv">
-                <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
-                    <input type="file" name="fileToUpload" id="fileToUpload">
-                    <input type="submit" value="Update profile picture" name="submit">
-                </form>
-            </div>
-        <h1 id = 'hamburger'>klack</h1>
+        <div id="uploadDiv">
+            <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="fileToUpload" id="fileToUpload">
+                <input type="submit" value="Update profile picture" name="submit">
+            </form>
+        </div>
+        <h1 id='hamburger'>klack</h1>
         <div id="users"></div>
     </div>
 
@@ -27,22 +27,23 @@
             <div id="messageheader">This is the very beginning of the conversation.</div>
         </div>
 
-    <div id="text">
-        <textarea data-meteor-emoji="true" id="newmessage" rows=3 cols=80 placeholder="Type your message here" autofocus></textarea>
-        <button id="send-icon"></button>
-        <!-- <button id="emoji-icon"></button> -->
+        <div id="text">
+            <textarea data-meteor-emoji="true" id="newmessage" rows=3 cols=80 placeholder="Type your message here" autofocus></textarea>
+            <button id="send-icon"></button>
+            <!-- <button id="emoji-icon"></button> -->
 
+        </div>
     </div>
     <script src="dist/meteorEmoji.min.js"></script>
     <script>
         (() => {
-        new MeteorEmoji()
+            new MeteorEmoji()
         })()
     </script>
     <!-- emoji converter -->
     <script src="https://cdn.jsdelivr.net/npm/emoji-js@3.4.0/lib/emoji.min.js"></script>
     <script src="main.js"></script>
-    
+
 </body>
 
 </html>
