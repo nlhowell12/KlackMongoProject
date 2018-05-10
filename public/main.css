@@ -10,6 +10,9 @@ body {
   margin: 0;
 }
 
+#fileToUpload {
+width: 180px;
+}
 #userpane {
   background: #00366f;
   width: 200px;
@@ -134,6 +137,9 @@ svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#object
   body {
     flex-direction: column;
   }
+  input#fileToUpload {
+    width: 180px;
+    }
   #userpane h1 {
     background: url('hamburger.png');
     background-repeat: no-repeat;
