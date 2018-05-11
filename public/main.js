@@ -69,7 +69,7 @@ function appendMessage(msg, pics) {
 
     if (userandpic.pic !== "none") {
         messagesDiv.innerHTML +=
-            `<div class="message"><img src="${userandpic.pic}" class="profilePic"><strong>${msg.sender}</strong>(${d.toLocaleString()}) :<br>${msg.message}</div>`;
+            `<div class="message"><img src="${userandpic.pic}" class="profilePic"><strong>${msg.sender} </strong><font size="2">(${d.toLocaleString()})</font> :<br>${msg.message}</div>`;
     } else {
         messagesDiv.innerHTML +=
             `<div class="message"><strong>${msg.sender}</strong>(${d.toLocaleString()}) :<br>${msg.message}</div>`;;
