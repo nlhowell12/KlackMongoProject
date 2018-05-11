@@ -163,6 +163,7 @@ svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#object
     left: 0px;
     top: 10vh;
     border-top: 2px solid #003690;
+    z-index: 1;
   }
 
   #newmessage {
