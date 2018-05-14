@@ -164,6 +164,7 @@ function sendMessage() {
 document.getElementById("newmessage").addEventListener("keypress", (event) => {
     // if the key pressed was enter (and not shift enter), post the message.
     if (event.keyCode === 13 && !event.shiftKey) {
+        // Only send the message if something was entered in the text area
         if (textarea.value.trim().length > 0) {
             sendMessage();
         }
@@ -171,6 +172,7 @@ document.getElementById("newmessage").addEventListener("keypress", (event) => {
     }
 });
 document.getElementById("send-icon").addEventListener("click", (event) => {
+    // Only send the message if something was entered in the text area
     if (textarea.value.trim().length > 0) {
         sendMessage();
     }
