@@ -5,8 +5,8 @@ const ding = new Audio('typewriter_ding.m4a');
 const hamburger = document.getElementById('hamburger');
 
 // Connects to the server
-// const socket = io.connect('https://kenzieslack.herokuapp.com/')
-const socket = io.connect("http://localhost:3000")
+const socket = io.connect('https://safe-woodland-21579.herokuapp.com//')
+// const socket = io.connect("http://localhost:3000")
 
 // text to emoji converter library
 const emoji = new EmojiConvertor();
@@ -80,8 +80,8 @@ function appendMessage(msg, pics) {
 
 // Prints out all the messages in the database when the server sends it on initial connection
 socket.on('initial', (data) => {
-    for (let message of data) {
-        messagesDiv.innerHTML += `<div class="message"><strong>${message.name}</strong><br>${message.message}</div>`;
+    for (let message of data.messages) {
+       appendMessage(message, data.pics)
     }
 })
 
