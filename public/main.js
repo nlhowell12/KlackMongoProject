@@ -5,22 +5,19 @@ const ding = new Audio('typewriter_ding.m4a');
 const hamburger = document.getElementById('hamburger');
 
 // Connects to the server
-const socket = io.connect('https://xforceklack.herokuapp.com/')
-// const socket = io.connect("http://localhost:3000")
+// const socket = io.connect('https://xforceklack.herokuapp.com/')
+const socket = io.connect("http://localhost:3000")
 
 // text to emoji converter library
 const emoji = new EmojiConvertor();
 
-
-hamburger.addEventListener('click', function(){
+hamburger.addEventListener('click', function () {
     if (userList.style.display === 'none') {
-        userList.style.display = 'block'    
-    }
-    else {
+        userList.style.display = 'block'
+    } else {
         userList.style.display = 'none'
     }
 });
-
 
 // this will be the list of all messages displayed on the client
 let messages = [{
@@ -33,7 +30,7 @@ function determineName() {
     name = window.prompt("Enter your name");
 
     if (name.length > 13) {
-        
+
         window.alert("Username too long, 13 characters max, please try again");
         determineName();
     } else if (name === null || name.length === 0) {
@@ -41,17 +38,25 @@ function determineName() {
     };
 
 
-    socket.emit('user', {name, pic: "none"}) 
-
+    socket.emit('user', {
+        name,
+        pic: "none"
+    })
 }
 determineName();
 
 // redraw the entire list of users, indicating active/inactive
 function listUsers(users) {
     let userStrings = users.map((user) =>
-    (user.active ? `<span class="active"><span class="cyan">&#9679;</span> ${user.name}</span>` : `<span class="inactive">&#9675; ${user.name}</span>`)
-);
-userList.innerHTML = userStrings.join("<br>");
+        (user.active ? `<span class="active user"><span class="cyan">&#9679;</span> ${user.name}</span>` : `<span class="inactive user">&#9675; ${user.name}</span>`)
+    );
+    userList.innerHTML = userStrings.join("<br>");
+    const friends = document.querySelectorAll(".user")
+    friends.forEach(name => {
+        name.addEventListener("click", () => {
+            console.log("foo")
+        })
+    })
 }
 
 // true if the messages div is already scrolled down to the latest message
@@ -70,33 +75,33 @@ function appendMessage(msg, pics) {
     var d = new Date(msg.timestamp);
     // expected output: "7/25/2016, 1:35:07 PM"
     // console.log( pics[msg.sender] )
-    
+
     // find profile pic of sender
-    var userandpic = pics.find(function(element) {
+    var userandpic = pics.find(function (element) {
         if (element.name === msg.name) {
             return element.pic;
         }
     })
     // console.log(userandpic);
-    
+
     if (userandpic.pic !== "none") {
         messagesDiv.innerHTML +=
-        `<div class="message"><img src="${userandpic.pic}" class="profilePic"><strong>${msg.name} </strong><font size="2">(${d.toLocaleString()})</font> :<br>${msg.message}</div>`;
+            `<div class="message"><img src="${userandpic.pic}" class="profilePic"><strong>${msg.name} </strong><font size="2">(${d.toLocaleString()})</font> :<br>${msg.message}</div>`;
     } else {
         messagesDiv.innerHTML +=
-        `<div class="message"><strong>${msg.name}</strong>(${d.toLocaleString()}) :<br>${msg.message}</div>`;;
+            `<div class="message"><strong>${msg.name}</strong>(${d.toLocaleString()}) :<br>${msg.message}</div>`;;
     }
 }
 
 // Prints out all the messages in the database when the server sends it on initial connection
 socket.on('initial', (data) => {
     for (let message of data.messages) {
-       appendMessage(message, data.pics)
+        appendMessage(message, data.pics)
     }
 })
 
 // Redraws the user list to show inactive users when the server checks every 15 seconds
-socket.on('activeUsers', (data) =>{
+socket.on('activeUsers', (data) => {
     listUsers(data.users);
 })
 
@@ -123,11 +128,14 @@ document.getElementById("newmessage").addEventListener("keypress", (event) => {
         name
     })
     // if the key pressed was enter (and not shift+enter), post the message.
-    if(event.keyCode === 13 && !event.shiftKey) {
+    if (event.keyCode === 13 && !event.shiftKey) {
         ding.play();
         textarea.value = emoji.replace_colons(textarea.value);
-        if (textarea.value.trim().length > 0) { 
-        socket.emit('chat', {name, message: textarea.value});
+        if (textarea.value.trim().length > 0) {
+            socket.emit('chat', {
+                name,
+                message: textarea.value
+            });
         }
         textarea.value = "";
         textarea.focus();
@@ -137,9 +145,12 @@ document.getElementById("newmessage").addEventListener("keypress", (event) => {
 // Handles clicking the send icon
 document.getElementById("send-icon").addEventListener("click", (event) => {
     ding.play();
-    textarea.value = emoji.replace_colons(textarea.value); 
+    textarea.value = emoji.replace_colons(textarea.value);
     if (textarea.value.trim().length > 0) {
-    socket.emit('chat', {name, message: textarea.value});
+        socket.emit('chat', {
+            name,
+            message: textarea.value
+        });
     }
     textarea.value = "";
     textarea.focus();
