@@ -5,8 +5,8 @@ const ding = new Audio('typewriter_ding.m4a');
 const hamburger = document.getElementById('hamburger');
 
 // Connects to the server
-const socket = io.connect('https://xforceklack.herokuapp.com//')
-// const socket = io.connect("http://localhost:3000")
+// const socket = io.connect('https://xforceklack.herokuapp.com//')
+const socket = io.connect("http://localhost:3000")
 
 // text to emoji converter library
 const emoji = new EmojiConvertor();
@@ -115,8 +115,10 @@ document.getElementById("newmessage").addEventListener("keypress", (event) => {
     // if the key pressed was enter (and not shift+enter), post the message.
     if(event.keyCode === 13 && !event.shiftKey) {
         ding.play();
-        textarea.value = emoji.replace_colons(textarea.value); 
+        textarea.value = emoji.replace_colons(textarea.value);
+        if (textarea.value.trim().length > 0) { 
         socket.emit('chat', {name, message: textarea.value});
+        }
         textarea.value = "";
         textarea.focus();
     }
@@ -126,77 +128,13 @@ document.getElementById("newmessage").addEventListener("keypress", (event) => {
 document.getElementById("send-icon").addEventListener("click", (event) => {
     ding.play();
     textarea.value = emoji.replace_colons(textarea.value); 
+    if (textarea.value.trim().length > 0) {
     socket.emit('chat', {name, message: textarea.value});
+    }
     textarea.value = "";
     textarea.focus();
 });
 
-
-// function fetchMessages() {
-
-//     fetch("/messages?for=" + encodeURIComponent(name))
-//         .then(response => response.json())
-//         .then(data => {
-//             // if already scrolled to bottom, do so again after adding messages
-//             const shouldScroll = scrolledToBottom();
-//             var shouldDing = false;
-
-//             // redraw the user list
-//             listUsers(data.users);
-
-//             // examine all received messages, add those newer than the last one shown
-//             for (let i = 0; i < data.messages.length; i++) {
-//                 let msg = data.messages[i];
-//                 if (msg.timestamp > messages[messages.length - 1].timestamp) {
-//                     appendMessage(msg, data.pics);
-//                     shouldDing = true;
-//                 }
-//             }
-
-//             if (shouldScroll && shouldDing) scrollMessages();
-
-//             // poll again after waiting 5 seconds
-//             setTimeout(fetchMessages, 5000);
-//         })
-// }
-
-// function sendMessage() {
-//     textarea.disabled = true;
-//     // text to emoji convert
-//     textarea.value = emoji.replace_colons(textarea.value); 
-//     const postRequestOptions = {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({
-//             sender: name,
-//             message: textarea.value
-//         }),
-//     }
-//     fetch("/messages", postRequestOptions)
-//         .then(response => response.json())
-//         .then(data => {
-//             appendMessage(data.messages, data.pics);
-//             scrollMessages();
-//             // reset the textarea
-//             textarea.value = "";
-//             textarea.disabled = false;
-//             textarea.focus();
-//         })
-//         .catch(err => {
-//             console.log(err);
-//         })
-// }
-// document.getElementById("newmessage").addEventListener("keypress", (event) => {
-//     // if the key pressed was enter (and not shift enter), post the message.
-//     if (event.keyCode === 13 && !event.shiftKey) {
-//         sendMessage();
-//     }
-// });
-// document.getElementById("send-icon").addEventListener("click", (event) => {
-//     sendMessage();
-// });
 
 // adds a hidden field to the upload form with the user's name (this is required to link them later)
 document.getElementById("uploadForm").innerHTML += `<input type="hidden" value="${name}" name="user_id" />`;

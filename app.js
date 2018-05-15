@@ -21,10 +21,10 @@ app.use(express.static("./public/uploads"))
 app.use(express.json())
 
 // Mongo stuff
-mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
-console.log("Successfully connected to database");
-});
-// mongoose.connect('mongodb://localhost/klack')
+// mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
+// console.log("Successfully connected to database");
+// });
+mongoose.connect('mongodb://localhost/klack')
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error: '));
@@ -144,6 +144,7 @@ io.on('connection', (socket) => {
         usersSimple.sort(userSortFn);
         usersSimple.filter((a) => (a.name !== data.name))
         
+        // Posts message to the db
         let message = new Message({
             name: data.name,
             message: data.message,
@@ -171,24 +172,12 @@ io.on('connection', (socket) => {
         }) 
     })
     
+    // Receives a typing message and broadcasts it to all the sockets except the one sending it
     socket.on('typing', (data) => {
         socket.broadcast.emit('typing', data);
     })
     
-    socket.on('upload', upload.single('fileToUpload'), (data) => {
-        profilePics[data.user_id] = data.file.filename;
-        User.update({
-            name: data.user_id
-        }, {
-            $set: {
-                pic: data.file.filename
-            }
-        },
-        function(err, numAffected) {
-            console.log("User created", numAffected);
-        });
-    })
-    
+    // Recevies new user information and creates that entry in the database, assuming that there isn't already a profile with the same name in the DB
     socket.on('user', (data) => {
         var user = new User({
             name: data.name,
@@ -206,6 +195,7 @@ io.on('connection', (socket) => {
         })
     })
     
+    // Updates active users every 15 seconds to show that a user is inactive
     setInterval((sockets) => {
         const now = Date.now();
         // consider users active if their last message was sent in the last 15 seconds
@@ -237,119 +227,3 @@ app.post('/upload', upload.single('fileToUpload'), function (req, res) {
 );
 res.redirect('/');
 })
-
-// app.get("/messages", (request, response) => {
-//     let messages = []
-//     const now = Date.now();
-//     const requireActiveSince = now - (15 * 1000) // consider inactive after 15 seconds 
-//     users[request.query.for] = now;
-//     // Get message from database
-
-//     //make array of all users and their pics
-//     let allUsers = []
-//     User.find().sort({
-//         timestamp: 'asc'
-//     }).exec(function (err, users) {
-//         users.forEach(user => {
-//             allUsers.push(user);
-//         })
-//     });
-
-//     Message.find().sort({
-//         timestamp: 'asc'
-//     }).exec(function (err, msgs) {
-//         msgs.forEach(msg => {
-//             messages.push(msg);
-//             if (!users[msg.sender]) {
-//                 users[msg.sender] = msg.timestamp
-//             } else if (users[msg.sender] < msg.timestamp) {
-//                 users[msg.sender] = msg.timestamp
-//             }
-//         });
-
-//         let usersSimple = Object.keys(users).map((x) => {
-//             return ({
-//                 name: x,
-//                 active: (users[x] > requireActiveSince)
-//             })
-//         })
-
-//         usersSimple.sort(userSortFn);
-//         usersSimple.filter((a) => (a.name !== request.query.for))
-//         lastMsgTimestamp = messages[messages.length - 1];
-//         response.send({
-//             messages: messages.slice(-40),
-//             users: usersSimple,
-//             pics: allUsers
-//         })
-//     });
-// })
-
-// app.post("/messages", (request, response) => {
-//     // add a timestamp to each incoming message.
-//     request.body.timestamp = Date.now()
-//     users[request.body.sender] = request.body.timestamp;
-
-//     //Create an instance of Message model
-
-//     var message = new Message({
-//         sender: request.body.sender,
-//         message: request.body.message,
-//         timestamp: request.body.timestamp
-//     });
-//     // Save to database
-//     message.save()
-//     .then(data => {
-//         console.log('msg saved to the database:', data);
-//     })
-//     .catch(err => {
-//         console.log('Unable to save to database');
-//     });
-
-//     // make array of all the users and their pics
-//     let allUsers = []
-//     User.find().sort({
-//         timestamp: 'asc'
-//     }).exec(function (err, users) {
-//         users.forEach(user => {
-//             allUsers.push(user);
-//         })
-//         // console.log("allUsers: " + allUsers);
-//         response.status(201)
-//         response.send({
-//             messages: request.body,
-//             pics: allUsers
-//         })
-//     });
-// })
-
-
-
-// app.post('/user', function (req, res) {
-
-//     var user = new User({
-//         name: req.body.name,
-//         pic: req.body.pic
-//     });
-
-//     //If the user already exist in the DB the user will not be created else a new user will be created
-//     User.update({
-//         name: req.body.name
-//     }, {
-//         $setOnInsert: user
-//     }, {
-//         upsert: true
-//     },
-//     function (err, numAffected) {
-//         console.log("User created", numAffected);
-//     }
-// );
-
-// res.send({
-//     say: "user saved to the database: " + user
-// })
-// })
-
-// app.listen(PORT, () => {
-
-// })
