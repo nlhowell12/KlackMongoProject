@@ -114,10 +114,11 @@ document.getElementById("newmessage").addEventListener("keypress", (event) => {
     })
     // if the key pressed was enter (and not shift+enter), post the message.
     if(event.keyCode === 13 && !event.shiftKey) {
-        ding.play();
         textarea.value = emoji.replace_colons(textarea.value);
+        // Only send message if text area is not empty
         if (textarea.value.trim().length > 0) { 
-        socket.emit('chat', {name, message: textarea.value});
+          socket.emit('chat', {name, message: textarea.value});
+          ding.play();
         }
         textarea.value = "";
         textarea.focus();
@@ -126,10 +127,11 @@ document.getElementById("newmessage").addEventListener("keypress", (event) => {
 
 // Handles clicking the send icon
 document.getElementById("send-icon").addEventListener("click", (event) => {
-    ding.play();
     textarea.value = emoji.replace_colons(textarea.value); 
+    // Only send message if text area is not empty
     if (textarea.value.trim().length > 0) {
-    socket.emit('chat', {name, message: textarea.value});
+      socket.emit('chat', {name, message: textarea.value});
+      ding.play();
     }
     textarea.value = "";
     textarea.focus();
