@@ -32,7 +32,7 @@ let name = "";
 function determineName() {
     name = window.prompt("Enter your name");
     if (name === null || name.length === 0) name = "Anonymous";
-    socket.emit('user', {name})
+    socket.emit('user', {name, pic: "none"})
 }
 determineName();
 
