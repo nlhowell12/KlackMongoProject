@@ -31,8 +31,18 @@ let name = "";
 
 function determineName() {
     name = window.prompt("Enter your name");
-    if (name === null || name.length === 0) name = "Anonymous";
-    socket.emit('user', {name, pic: "none"})
+
+    if (name.length > 13) {
+        
+        window.alert("Username too long, 13 characters max, please try again");
+        determineName();
+    } else if (name === null || name.length === 0) {
+        name = "Anonymous"
+    };
+
+
+    socket.emit('user', {name, pic: "none"}) 
+
 }
 determineName();
 
