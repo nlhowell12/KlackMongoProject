@@ -166,8 +166,10 @@ io.on('connection', (socket) => {
         .then((users) => {
             users.forEach(user => {
                 allUsers.push(user);
-                io.sockets.emit('chat', {message, users: usersSimple, pics: allUsers})
             })
+        })
+        .then(() => {
+            io.sockets.emit('chat', {message, users: usersSimple, pics: allUsers})
         })
         .catch(err => {
             console.log("Error",err)
