@@ -5,8 +5,8 @@ const ding = new Audio('typewriter_ding.m4a');
 const hamburger = document.getElementById('hamburger');
 
 // Connects to the server
-// const socket = io.connect('https://xforceklack.herokuapp.com//')
-const socket = io.connect("http://localhost:3000")
+const socket = io.connect('https://xforceklack.herokuapp.com//')
+// const socket = io.connect("http://localhost:3000")
 
 // text to emoji converter library
 const emoji = new EmojiConvertor();
