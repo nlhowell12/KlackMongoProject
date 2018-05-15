@@ -23,10 +23,10 @@ app.use(express.json())
 app.use(cors())
 
 // Mongo stuff
-mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
-console.log("Successfully connected to database");
-});
-// mongoose.connect('mongodb://localhost/klack')
+// mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
+// console.log("Successfully connected to database");
+// });
+mongoose.connect('mongodb://localhost/klack')
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error: '));
@@ -166,8 +166,10 @@ io.on('connection', (socket) => {
         .then((users) => {
             users.forEach(user => {
                 allUsers.push(user);
-                io.sockets.emit('chat', {message, users: usersSimple, pics: allUsers})
             })
+        })
+        .then(() => {
+            io.sockets.emit('chat', {message, users: usersSimple, pics: allUsers})
         })
         .catch(err => {
             console.log("Error",err)
