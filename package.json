@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
-  "author": "Kavitha",
+  "author": "Nick",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.4",
@@ -20,13 +20,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kavikamal/KlackMongoProject.git"
+    "url": "git+https://github.com/nlhowell12/KlackMongoProject.git"
   },
   "keywords": [],
   "bugs": {
-    "url": "https://github.com/kavikamal/KlackMongoProject/issues"
+    "url": "https://github.com/nlhowell12/KlackMongoProject/issues"
   },
-  "homepage": "https://github.com/kavikamal/KlackMongoProject#readme",
+  "homepage": "https://github.com/nlhowell12/KlackMongoProject#readme",
   "devDependencies": {},
   "description": ""
 }
