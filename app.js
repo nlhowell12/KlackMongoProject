@@ -3,6 +3,7 @@ const querystring = require('querystring');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const fs = require('fs');
+const cors = require('cors');
 const app = express()
 
 const dbName = 'klack';
@@ -19,6 +20,7 @@ const io = socket(server);
 app.use(express.static("./public"))
 app.use(express.static("./public/uploads"))
 app.use(express.json())
+app.use(cors())
 
 // Mongo stuff
 mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
