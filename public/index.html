@@ -18,6 +18,10 @@
                 <input type="file" name="fileToUpload" id="fileToUpload">
                 <input type="submit" value="Update profile picture" name="submit">
             </form>
+            <form id="chatUploadForm" action="/uploadChat" method="post" enctype="multipart/form-data">
+                <input type="file" name="chatFile" id="chatFile">
+                <input type="submit" value="Upload picture to chat" name="submit">
+            </form>
         </div>
         <h1 id='hamburger'>klack</h1>
         <div id="users"></div>
