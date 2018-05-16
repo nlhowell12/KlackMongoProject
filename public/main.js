@@ -80,14 +80,14 @@ function appendMessage(msg, pics) {
     console.log(userandpic);
     
     if (userandpic.pic !== "none") {
-        if(msg.message.includes("JPG" || 'png' || 'jpeg' || 'gif')) {
+        if(msg.message.includes("JPG" || 'jpg' || 'PNG' || 'png' || 'JPEG' || 'jpeg' || 'GIF' || 'gif')) {
             messagesDiv.innerHTML +=
         `<div class="message"><img src="${userandpic.pic}" class="profilePic"><strong>${msg.name} </strong><font size="2">(${d.toLocaleString()})</font> :<br> <img class="mobileImg" src=${msg.message}></div>`;
         } else {
         messagesDiv.innerHTML +=
         `<div class="message"><img src="${userandpic.pic}" class="profilePic"><strong>${msg.name} </strong><font size="2">(${d.toLocaleString()})</font> :<br>${msg.message}</div>`;
     }} else {
-        if(msg.message.includes("JPG" || 'png' || 'jpeg' || 'gif')) {
+        if(msg.message.includes("JPG" || 'jpg' || 'PNG' || 'png' || 'JPEG' || 'jpeg' || 'GIF' || 'gif')) {
             messagesDiv.innerHTML +=
         `<div class="message"><strong>${msg.name}</strong>(${d.toLocaleString()}) :<br><img class="mobileImg" src=${msg.message}></div>`;;
         } else {
