@@ -145,7 +145,9 @@ io.on('connection', (socket) => {
         .then((numAffected) => {
             console.log("User created", numAffected)
         })
-        .then(User.find)
+        .then(() => {
+            return User.find()
+        })
         .then((users) => {
             socket.emit('activeUsers', {users})
         })
@@ -160,7 +162,9 @@ io.on('connection', (socket) => {
                 active: false
             }
         })
-        .then(User.find)
+        .then(() =>{
+            return User.find()
+        })
         .then((users) => {
             io.sockets.emit('activeUsers', {users})
         })
