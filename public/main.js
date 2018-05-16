@@ -6,7 +6,7 @@ const hamburger = document.getElementById('hamburger');
 
 // Connects to the server
 const socket = io.connect('https://xforceklack.herokuapp.com/')
-// const socket = io.connect("http://localhost:3000")
+// const socket = io.connect("http://localhost:3000", {'sync disconnect on unload': true});
 
 // text to emoji converter library
 const emoji = new EmojiConvertor();
@@ -29,6 +29,10 @@ let messages = [{
 
 let name = "";
 
+socket.on('connect', () => {
+    determineName();
+})
+
 function determineName() {
     name = window.prompt("Enter your name");
 
@@ -40,15 +44,12 @@ function determineName() {
         name = "Anonymous"
     };
 
-
-    socket.emit('user', {name, pic: "none"}) 
-
+    socket.emit('user', {name, socketID: socket.id, pic: "none"}) 
 }
-determineName();
+
 
 // redraw the entire list of users, indicating active/inactive
 function listUsers(users) {
-    
     let userStrings = users.map((user) =>
     (user.active ? `<span class="active"><span class="cyan">&#9679;</span> ${user.name}</span>` : `<span class="inactive">&#9675; ${user.name}</span>`)
     
@@ -81,7 +82,6 @@ function appendMessage(msg, pics) {
             return element.pic;
         }
     })
-    // console.log(userandpic);
     
     if (userandpic.pic !== "none") {
         messagesDiv.innerHTML +=
@@ -98,10 +98,12 @@ socket.on('initial', (data) => {
        appendMessage(message, data.pics)
        
     }
+    scrolledToBottom();
 })
 
 // Redraws the user list to show inactive users when the server checks every 15 seconds
 socket.on('activeUsers', (data) =>{
+    console.log(data)
     listUsers(data.users);
 })
 
@@ -111,7 +113,6 @@ socket.on('activeUsers', (data) =>{
 socket.on('chat', (data) => {
     // feedback.innerHTML = "";
     appendMessage(data.message, data.pics);
-    listUsers(data.users);
     scrollMessages();
 })
 
