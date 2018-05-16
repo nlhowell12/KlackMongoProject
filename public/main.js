@@ -50,10 +50,12 @@ function determineName() {
 
 // redraw the entire list of users, indicating active/inactive
 function listUsers(users) {
-    console.log(users)
     let userStrings = users.map((user) =>
     (user.active ? `<span class="active"><span class="cyan">&#9679;</span> ${user.name}</span>` : `<span class="inactive">&#9675; ${user.name}</span>`)
+    
+    
 );
+
 userList.innerHTML = userStrings.join("<br>");
 }
 
@@ -94,6 +96,7 @@ function appendMessage(msg, pics) {
 socket.on('initial', (data) => {
     for (let message of data.messages) {
        appendMessage(message, data.pics)
+       
     }
     scrolledToBottom();
 })

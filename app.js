@@ -24,7 +24,7 @@ app.use(cors())
 
 // Mongo stuff
 mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
-console.log("Successfully connected to database");
+    console.log("Successfully connected to database");
 });
 // mongoose.connect('mongodb://localhost/klack')
 
@@ -33,18 +33,20 @@ db.on('error', console.error.bind(console, 'connection error: '));
 
 //User can upload image types - (jpg|jpeg|png|gif)
 var storage = multer.diskStorage({
-    
+
     destination: (req, file, cb) => {
-        cb(null, 'public/uploads/') 
+        cb(null, 'public/uploads/')
     },
     filename: (req, file, cb) => {
         if (!file.originalname.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
             return cb(new Error('Only image files are allowed!'), false);
         }
-        cb(null,Date.now()  + '-' + file.originalname)
+        cb(null, Date.now() + '-' + file.originalname)
     }
 });
-const upload = multer({storage: storage});
+const upload = multer({
+    storage: storage
+});
 
 // object of names and their respective pic filenames
 let profilePics = {
@@ -87,7 +89,9 @@ let usersTimestamps = [];
 
 io.on('connection', (socket) => {
     console.log(`Connected on Port: ${PORT}`)
+
     
+
     User.find()
     .then((users) => {
         Message.find((err, messages) => {
@@ -102,11 +106,12 @@ io.on('connection', (socket) => {
         // get the current time
         const now = Date.now();
         
+
         // Posts message to the db
         let message = new Message({
             name: data.name,
             message: data.message,
-            timestamp: now,  
+            timestamp: now,
         })
         message.save()
         .then(data => {
@@ -123,14 +128,16 @@ io.on('connection', (socket) => {
         .catch(err => {
             console.log("Error",err)
         }) 
+
     })
-    
+
     // Receives a typing message and broadcasts it to all the sockets except the one sending it
     socket.on('typing', (data) => {
         socket.broadcast.emit('typing', data);
     })
-    
+
     // Recevies new user information and creates that entry in the database, assuming that there isn't already a profile with the same name in the DB
+
     socket.on('user', ({name, pic, socketID}) => {
         let user = new User({name, pic})
         User.update({name}, {
@@ -172,21 +179,22 @@ io.on('connection', (socket) => {
             console.error(err);
         })    
     })
+
 })
 
 // handles pic uploading
 app.post('/upload', upload.single('fileToUpload'), function (req, res) {
     profilePics[req.body.user_id] = req.file.filename;
     User.update({
-        name: req.body.user_id
-    }, {
-        $set: {
-            pic: req.file.filename
+            name: req.body.user_id
+        }, {
+            $set: {
+                pic: req.file.filename
+            }
+        },
+        function (err, numAffected) {
+            console.log("User created", numAffected);
         }
-    },
-    function (err, numAffected) {
-        console.log("User created", numAffected);
-    }
-);
-res.redirect('/');
+    );
+    res.redirect('/');
 })
