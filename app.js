@@ -23,10 +23,10 @@ app.use(express.json())
 app.use(cors())
 
 // Mongo stuff
-mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
-console.log("Successfully connected to database");
-});
-// mongoose.connect('mongodb://localhost/klack')
+// mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
+// console.log("Successfully connected to database");
+// });
+mongoose.connect('mongodb://localhost/klack')
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error: '));
@@ -63,6 +63,7 @@ var Message = mongoose.model('Message', messageSchema);
 
 // user schema for profile pics and stuff
 var userSchema = new Schema({
+    socketID: String,
     name: String,
     pic: String
 });
@@ -184,10 +185,12 @@ io.on('connection', (socket) => {
     // Recevies new user information and creates that entry in the database, assuming that there isn't already a profile with the same name in the DB
     socket.on('user', (data) => {
         var user = new User({
+            socketID: socket.id,
             name: data.name,
             pic: data.pic
         })
         User.update({
+            socketID: socket.id,
             name: data.name
         }, {
             $setOnInsert: user
@@ -199,6 +202,13 @@ io.on('connection', (socket) => {
         })
     })
     
+    socket.on('inactiveUser', (data) => {
+
+    })
+    
+    socket.on('disconnect', (socket) => {
+        console.log(socket)
+    })
     // Updates active users every 15 seconds to show that a user is inactive
     setInterval((sockets) => {
         const now = Date.now();
