@@ -65,7 +65,8 @@ var Message = mongoose.model('Message', messageSchema);
 var userSchema = new Schema({
     socketID: String,
     name: String,
-    pic: String
+    pic: String,
+    active: Boolean
 });
 var User = mongoose.model('User', userSchema);
 
@@ -87,65 +88,19 @@ let usersTimestamps = [];
 io.on('connection', (socket) => {
     console.log(`Connected on Port: ${PORT}`)
     
-    // make array of all the users and their pics
-    let allUsers = []
-    
     User.find()
     .then((users) => {
-        if (users) {
-            users.forEach(user => {
-                allUsers.push(user);
-            })
-        }
-    });
-
-    Message.find()
-    .then(messages => {
-        messages.forEach(message => {
-            if (!usersTimestamps[message.name]) {
-                usersTimestamps[message.name] = message.timestamp
-            } else if (usersTimestamps[message.name] < message.timestamp) {
-                usersTimestamps[message.name] = message.timestamp
-            }
+        Message.find((err, messages) => {
+            socket.emit('initial', {messages, pics: users});
         })
-    })
-    .then(() => {
-        const now = Date.now();
-        // consider users active if they have connected (GET or POST) in last 15 seconds
-        const requireActiveSince = now - (15*1000)
-        
-        // create a new list of users with a flag indicating whether they have been active recently
-        usersSimple = Object.keys(usersTimestamps).map((x) => ({name: x, active: (usersTimestamps[x] > requireActiveSince)}))
-        
-        // sort the list of users alphabetically by name
-        usersSimple.sort(userSortFn);
-        usersSimple.filter((a) => (a.name !== usersTimestamps.name))
-        socket.emit('activeUsers', {users: usersSimple})
     })
     .catch(err => {
         console.error(err);
     })    
     
-    Message.find((err, messages) => {
-        socket.emit('initial', {messages, pics: allUsers});
-    })
-    
-    
     socket.on('chat', (data) =>{
         // get the current time
         const now = Date.now();
-        // consider users active if they have sent a message in last 15 seconds
-        const requireActiveSince = now - (15*1000)
-        
-        // update the requesting user's last access time
-        usersTimestamps[data.name] = now;
-        
-        // create a new list of users with a flag indicating whether they have been active recently
-        usersSimple = Object.keys(usersTimestamps).map((x) => ({name: x, active: (usersTimestamps[x] > requireActiveSince)}))
-        
-        // sort the list of users alphabetically by name
-        usersSimple.sort(userSortFn);
-        usersSimple.filter((a) => (a.name !== data.name))
         
         // Posts message to the db
         let message = new Message({
@@ -161,16 +116,9 @@ io.on('connection', (socket) => {
             console.log('Unable to save to database');
         });
         
-        // make array of all the users and their pics
-        let allUsers = []
         User.find()
         .then((users) => {
-            users.forEach(user => {
-                allUsers.push(user);
-            })
-        })
-        .then(() => {
-            io.sockets.emit('chat', {message, users: usersSimple, pics: allUsers})
+            io.sockets.emit('chat', {message, pics: users})
         })
         .catch(err => {
             console.log("Error",err)
@@ -183,46 +131,43 @@ io.on('connection', (socket) => {
     })
     
     // Recevies new user information and creates that entry in the database, assuming that there isn't already a profile with the same name in the DB
-    socket.on('user', (data) => {
-        var user = new User({
-            socketID: socket.id,
-            name: data.name,
-            pic: data.pic
-        })
-        User.update({
-            socketID: socket.id,
-            name: data.name
-        }, {
+    socket.on('user', ({name, pic, socketID}) => {
+        let user = new User({name, pic})
+        User.update({name}, {
+            $set: {
+                socketID,
+                active: true
+            },
             $setOnInsert: user
         }, {
             upsert: true
-        },
-        function (err, numAffected) {
+        })
+        .then((numAffected) => {
             console.log("User created", numAffected)
+        })
+        .then(User.find)
+        .then((users) => {
+            socket.emit('activeUsers', {users})
+        })
+        .catch(err => {
+            console.log(err);
         })
     })
     
-    socket.on('inactiveUser', (data) => {
-
+    socket.on('disconnect', () => {
+        User.update({"socketID": socket.id}, {
+            $set: {
+                active: false
+            }
+        })
+        .then(User.find)
+        .then((users) => {
+            io.sockets.emit('activeUsers', {users})
+        })
+        .catch(err => {
+            console.error(err);
+        })    
     })
-    
-    socket.on('disconnect', (socket) => {
-        console.log(socket)
-    })
-    // Updates active users every 15 seconds to show that a user is inactive
-    setInterval((sockets) => {
-        const now = Date.now();
-        // consider users active if their last message was sent in the last 15 seconds
-        const requireActiveSince = now - (15*1000)
-        
-        // create a new list of users with a flag indicating whether they have been active recently
-        usersSimple = Object.keys(usersTimestamps).map((x) => ({name: x, active: (usersTimestamps[x] > requireActiveSince)}))
-        
-        // sort the list of users alphabetically by name
-        usersSimple.sort(userSortFn);
-        usersSimple.filter((a) => (a.name !== usersTimestamps.name))
-        io.sockets.emit('activeUsers', {users: usersSimple})
-    }, 15000)
 })
 
 // handles pic uploading

@@ -29,6 +29,10 @@ let messages = [{
 
 let name = "";
 
+socket.on('connect', () => {
+    determineName();
+})
+
 function determineName() {
     name = window.prompt("Enter your name");
 
@@ -40,14 +44,13 @@ function determineName() {
         name = "Anonymous"
     };
 
-
-    socket.emit('user', {name, pic: "none"}) 
-
+    socket.emit('user', {name, socketID: socket.id, pic: "none"}) 
 }
-determineName();
+
 
 // redraw the entire list of users, indicating active/inactive
 function listUsers(users) {
+    console.log(users)
     let userStrings = users.map((user) =>
     (user.active ? `<span class="active"><span class="cyan">&#9679;</span> ${user.name}</span>` : `<span class="inactive">&#9675; ${user.name}</span>`)
 );
@@ -77,7 +80,6 @@ function appendMessage(msg, pics) {
             return element.pic;
         }
     })
-    // console.log(userandpic);
     
     if (userandpic.pic !== "none") {
         messagesDiv.innerHTML +=
@@ -87,10 +89,6 @@ function appendMessage(msg, pics) {
         `<div class="message"><strong>${msg.name}</strong>(${d.toLocaleString()}) :<br>${msg.message}</div>`;;
     }
 }
-
-socket.on('disconnect', () => {
-    socket.emit('inactiveUser', {name});
-})
 
 // Prints out all the messages in the database when the server sends it on initial connection
 socket.on('initial', (data) => {
@@ -102,6 +100,7 @@ socket.on('initial', (data) => {
 
 // Redraws the user list to show inactive users when the server checks every 15 seconds
 socket.on('activeUsers', (data) =>{
+    console.log(data)
     listUsers(data.users);
 })
 
@@ -111,7 +110,6 @@ socket.on('activeUsers', (data) =>{
 socket.on('chat', (data) => {
     // feedback.innerHTML = "";
     appendMessage(data.message, data.pics);
-    listUsers(data.users);
     scrollMessages();
 })
 
