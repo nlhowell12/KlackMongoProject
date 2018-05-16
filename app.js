@@ -206,12 +206,24 @@ io.on('connection', (socket) => {
         const requireActiveSince = now - (15*1000)
         
         // create a new list of users with a flag indicating whether they have been active recently
-        usersSimple = Object.keys(usersTimestamps).map((x) => ({name: x, active: (usersTimestamps[x] > requireActiveSince)}))
+        usersSimple = Object.keys(usersTimestamps).map((x) => ({name: x, active: (usersTimestamps[x] > requireActiveSince), lastMessage: usersTimestamps[x]}));
+
+        for (i = 0; i < usersSimple.length; i++) {
+            usersSimple.sort(function(a, b) {return b.lastMessage - a.lastMessage });
+          }
+          
+          if (usersSimple.length > 10) {
+            lastTenUsers = usersSimple.slice(0, 4);
+          } else {
+              lastTenUsers = usersSimple;
+          }
+
+          
         
         // sort the list of users alphabetically by name
-        usersSimple.sort(userSortFn);
-        usersSimple.filter((a) => (a.name !== usersTimestamps.name))
-        io.sockets.emit('activeUsers', {users: usersSimple})
+        lastTenUsers.sort(userSortFn);
+        lastTenUsers.filter((a) => (a.name !== usersTimestamps.name))
+        io.sockets.emit('activeUsers', {users: lastTenUsers})
     }, 15000)
 })
 
