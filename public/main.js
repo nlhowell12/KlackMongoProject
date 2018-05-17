@@ -104,14 +104,16 @@ var d = new Date(msg.timestamp);
 // console.log( pics[msg.sender] )
 
 // find profile pic of sender
-var userandpic = pics.find(function(element) {
-    if (element.name === msg.name) {
-        return element.pic;
+var userandpic = pics.find(function(user) {
+    if (user.name === msg.name && user.pic) {
+        return user.pic;
+    } else {
+        return null;
     }
 })
 const checkArr = [".JPG", '.jpg', '.PNG', '.png', '.JPEG', '.jpeg', '.GIF', '.gif']
 
-if (userandpic.pic) {
+if (userandpic) {
     // messages are assumed to not be images initially
     let isImage = false;
     // checks against the array to see if the message includes one of the image types
@@ -147,6 +149,7 @@ else {
 // Prints out all the messages in the database when the server sends it on initial connection
 socket.on('initial', (data) => {
     for (let message of data.messages) {
+        console.log(data.pics)
         appendMessage(message, data.pics)
         
     }

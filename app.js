@@ -155,7 +155,7 @@ io.on('connection', (socket) => {
             return User.find()
         })
         .then((users) => {
-            socket.emit('activeUsers', {users})
+            io.sockets.emit('activeUsers', {users})
         })
         .catch(err => {
             console.log(err);
@@ -215,7 +215,7 @@ app.post("/uploadChat", upload.single('chatFile'), function (req, res) {
     .then(() => {
         User.find()
         .then((users) => {
-            io.sockets.emit('chat', {message: {message: req.file.filename, name: req.body.user_id}, pics: users})
+            io.sockets.emit('chat', {message: {message: req.file.filename, name: req.body.user_id, timestamp: now}, pics: users})
         })
         .catch(err => {
             console.log("Error",err)
