@@ -23,6 +23,12 @@ app.use(express.static("./public/uploads"))
 app.use(express.json())
 app.use(cors())
 
+var dir = './public/uploads';
+
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}
+
 // Mongo stuff
 mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
 console.log("Successfully connected to database");
