@@ -11,60 +11,76 @@ const socket = io.connect("http://localhost:3000")
 // text to emoji converter library
 const emoji = new EmojiConvertor();
 
+let name = "";
 
 hamburger.addEventListener('click', function(){
-    if (userList.style.display === 'none') {
-        userList.style.display = 'block'    
-    }
-    else {
-        userList.style.display = 'none'
-    }
+if (userList.style.display === 'none') {
+    userList.style.display = 'block'    
+}
+else {
+    userList.style.display = 'none'
+}
 });
 
 const uploadFormBut = document.getElementById('uploadFormBut');
 uploadFormBut.addEventListener('click', (event) => {
-    let formData = new FormData();
-    let fileField = document.getElementById("fileToUpload");
-    console.log(fileField.files[0]);
-    formData.append('user_id', name);
-    formData.append('fileToUpload', fileField.files[0]);
-    fetch("/upload", {
-        method: "POST",
-        body: formData
-    })
-    .catch((err) => {
-        console.log(err);
-    })
+let formData = new FormData();
+let fileField = document.getElementById("fileToUpload");
+
+formData.append('user_id', name);
+formData.append('fileToUpload', fileField.files[0]);
+fetch("/upload", {
+    method: "POST",
+    body: formData
+})
+.catch((err) => {
+    console.log(err);
+})
+})
+
+const chatPicBut = document.getElementById('chatPictureButton');
+chatPicBut.addEventListener('click', (event) => {
+let formData = new FormData();
+let fileField = document.getElementById("chatFile");
+
+formData.append('user_id', name);
+formData.append('chatFile', fileField.files[0]);
+fetch("/uploadChat", {
+    method: "POST",
+    body: formData
+})
+.catch((err) => {
+    console.log(err);
+})
 })
 
 
-let name = "";
 
 socket.on('connect', () => {
-    determineName();
+determineName();
 })
 
 function determineName() {
-    name = window.prompt("Enter your name");
+name = window.prompt("Enter your name");
 
-    if (name.length > 13) {
-        
-        window.alert("Username too long, 13 characters max, please try again");
-        determineName();
-    } else if (name === null || name.length === 0) {
-        name = "Anonymous"
-    };
+if (name.length > 13) {
+    
+    window.alert("Username too long, 13 characters max, please try again");
+    determineName();
+} else if (name === null || name.length === 0) {
+    name = "Anonymous"
+};
 
-    socket.emit('user', {name, socketID: socket.id}) 
+socket.emit('user', {name, socketID: socket.id}) 
 }
 
 
 // redraw the entire list of users, indicating active/inactive
 function listUsers(users) {
-    let userStrings = users.map((user) =>
-    (user.active ? `<span class="active"><span class="cyan">&#9679;</span> ${user.name}</span>` : `<span class="inactive">&#9675; ${user.name}</span>`)
-    
-    
+let userStrings = users.map((user) =>
+(user.active ? `<span class="active"><span class="cyan">&#9679;</span> ${user.name}</span>` : `<span class="inactive">&#9675; ${user.name}</span>`)
+
+
 );
 
 userList.innerHTML = userStrings.join("<br>");
@@ -72,57 +88,73 @@ userList.innerHTML = userStrings.join("<br>");
 
 // true if the messages div is already scrolled down to the latest message
 function scrolledToBottom() {
-    return messagesDiv.scrollTop + 600 >= messagesDiv.scrollHeight;
+return messagesDiv.scrollTop + 600 >= messagesDiv.scrollHeight;
 }
 
 // force the messages div to scroll to the latest message
 function scrollMessages() {
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
 // add the sender and text of one new message to the bottom of the message list
 function appendMessage(msg, pics) {
-    //Time the msg was sent 
-    var d = new Date(msg.timestamp);
-    // expected output: "7/25/2016, 1:35:07 PM"
-    // console.log( pics[msg.sender] )
+//Time the msg was sent 
+var d = new Date(msg.timestamp);
+// expected output: "7/25/2016, 1:35:07 PM"
+// console.log( pics[msg.sender] )
+
+// find profile pic of sender
+var userandpic = pics.find(function(element) {
+    if (element.name === msg.name) {
+        return element.pic;
+    }
+})
+const checkArr = [".JPG", '.jpg', '.PNG', '.png', '.JPEG', '.jpeg', '.GIF', '.gif']
+
+if (userandpic.pic) {
+    // messages are assumed to not be images initially
+    let isImage = false;
+    // checks against the array to see if the message includes one of the image types
+    for (let i = 0; i < checkArr.length; i++) {
+        msg.message.includes(checkArr[i]) ? isImage = true : null;
+    } 
     
-    // find profile pic of sender
-    var userandpic = pics.find(function(element) {
-        if (element.name === msg.name) {
-            return element.pic;
-        }
-    })
-    console.log(userandpic)
-    if (userandpic.pic) {
-        if(msg.message.includes("JPG" || 'jpg' || 'PNG' || 'png' || 'JPEG' || 'jpeg' || 'GIF' || 'gif')) {
-            messagesDiv.innerHTML +=
-        `<div class="message"><img src="${userandpic.pic}" class="profilePic"><strong>${msg.name} </strong><font size="2">(${d.toLocaleString()})</font> :<br> <img class="mobileImg" src=${msg.message}></div>`;
-        } else {
+    // appends the image at the file path if an image, otherwise appends the message as normal
+    if(isImage) {
+        messagesDiv.innerHTML +=
+        `<div class="message"><img src="${userandpic.pic}" class="profilePic"><strong>${msg.name} </strong><font size="2">(${d.toLocaleString()})</font> :<br> <img class="mobileImg" src="${msg.message}"></div>`;
+    } else {
         messagesDiv.innerHTML +=
         `<div class="message"><img src="${userandpic.pic}" class="profilePic"><strong>${msg.name} </strong><font size="2">(${d.toLocaleString()})</font> :<br>${msg.message}</div>`;
-    }} else {
-        if(msg.message.includes("JPG" || 'jpg' || 'PNG' || 'png' || 'JPEG' || 'jpeg' || 'GIF' || 'gif')) {
-            messagesDiv.innerHTML +=
+    }} 
+else {
+    // messages are assumed to not be images initially
+    let isImage = false;
+    // checks against the array to see if the message includes one of the image types
+    for (let i = 0; i < checkArr.length; i++) {
+        msg.message.includes(checkArr[i]) ? isImage = true : null;
+    } 
+    
+    if(isImage) {
+        messagesDiv.innerHTML +=
         `<div class="message"><strong>${msg.name}</strong>(${d.toLocaleString()}) :<br><img class="mobileImg" src=${msg.message}></div>`;;
-        } else {
+    } else {
         messagesDiv.innerHTML +=
         `<div class="message"><strong>${msg.name}</strong>(${d.toLocaleString()}) :<br>${msg.message}</div>`;;
     }}
-}
-
+}   
+    
 // Prints out all the messages in the database when the server sends it on initial connection
 socket.on('initial', (data) => {
     for (let message of data.messages) {
-       appendMessage(message, data.pics)
-       
+        appendMessage(message, data.pics)
+        
     }
     scrolledToBottom();
 })
 
 // Redraws the user list to show inactive users when the server checks every 15 seconds
 socket.on('activeUsers', (data) =>{
-    console.log(data)
     listUsers(data.users);
 })
 
@@ -130,6 +162,7 @@ socket.on('activeUsers', (data) =>{
 // Redraws the user list 
 // Scrolls to the bottom of the messagesDiv
 socket.on('chat', (data) => {
+    console.log(data.pics)
     // feedback.innerHTML = "";
     appendMessage(data.message, data.pics);
     scrollMessages();
@@ -152,8 +185,8 @@ document.getElementById("newmessage").addEventListener("keypress", (event) => {
         textarea.value = emoji.replace_colons(textarea.value);
         // Only send message if text area is not empty
         if (textarea.value.trim().length > 0) { 
-          socket.emit('chat', {name, message: textarea.value});
-          ding.play();
+            socket.emit('chat', {name, message: textarea.value});
+            ding.play();
         }
         textarea.value = "";
         textarea.focus();
@@ -165,13 +198,9 @@ document.getElementById("send-icon").addEventListener("click", (event) => {
     textarea.value = emoji.replace_colons(textarea.value); 
     // Only send message if text area is not empty
     if (textarea.value.trim().length > 0) {
-      socket.emit('chat', {name, message: textarea.value});
-      ding.play();
+        socket.emit('chat', {name, message: textarea.value});
+        ding.play();
     }
     textarea.value = "";
     textarea.focus();
 });
-
-
-// adds a hidden field to the upload form with the user's name (this is required to link them later)
-document.getElementById("chatUploadForm").innerHTML += `<input type="hidden" value="${name}" name="user_id" />`;

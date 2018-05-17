@@ -105,7 +105,6 @@ io.on('connection', (socket) => {
         // get the current time
         const now = Date.now();
         
-
         // Posts message to the db
         let message = new Message({
             name: data.name,
@@ -184,8 +183,6 @@ io.on('connection', (socket) => {
 
 // handles pic uploading
 app.post('/upload', upload.single('fileToUpload'), function (req, res) {
-    console.log(req.file.filename)
-    console.log(req.body.user_id)
     profilePics[req.body.user_id] = req.file.filename;
     User.update({
         name: req.body.user_id
@@ -206,7 +203,6 @@ app.post("/uploadChat", upload.single('chatFile'), function (req, res) {
     gm(`./public/uploads/${req.file.filename}`)
         .resize('680>')
         .noProfile()
-        .compress("JPEG")
         .write(`./public/uploads/${req.file.filename}`, function (err) {
             if (!err) console.log('done');
         });
@@ -215,5 +211,5 @@ app.post("/uploadChat", upload.single('chatFile'), function (req, res) {
         message: req.file.filename,
         timestamp: now,
     })
-    res.redirect('/');
+    res.end();
 })
