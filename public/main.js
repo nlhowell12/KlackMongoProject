@@ -21,11 +21,22 @@ hamburger.addEventListener('click', function(){
     }
 });
 
+const uploadFormBut = document.getElementById('uploadFormBut');
+uploadFormBut.addEventListener('click', (event) => {
+    let formData = new FormData();
+    let fileField = document.getElementById("fileToUpload");
+    console.log(fileField.files[0]);
+    formData.append('user_id', name);
+    formData.append('fileToUpload', fileField.files[0]);
+    fetch("/upload", {
+        method: "POST",
+        body: formData
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+})
 
-// this will be the list of all messages displayed on the client
-let messages = [{
-    timestamp: 0
-}];
 
 let name = "";
 
@@ -44,7 +55,7 @@ function determineName() {
         name = "Anonymous"
     };
 
-    socket.emit('user', {name, socketID: socket.id, pic: "none"}) 
+    socket.emit('user', {name, socketID: socket.id}) 
 }
 
 
@@ -82,8 +93,8 @@ function appendMessage(msg, pics) {
             return element.pic;
         }
     })
-    
-    if (userandpic.pic !== "none") {
+    console.log(userandpic)
+    if (userandpic.pic) {
         if(msg.message.includes("JPG" || 'jpg' || 'PNG' || 'png' || 'JPEG' || 'jpeg' || 'GIF' || 'gif')) {
             messagesDiv.innerHTML +=
         `<div class="message"><img src="${userandpic.pic}" class="profilePic"><strong>${msg.name} </strong><font size="2">(${d.toLocaleString()})</font> :<br> <img class="mobileImg" src=${msg.message}></div>`;
@@ -163,5 +174,4 @@ document.getElementById("send-icon").addEventListener("click", (event) => {
 
 
 // adds a hidden field to the upload form with the user's name (this is required to link them later)
-document.getElementById("uploadForm").innerHTML += `<input type="hidden" value="${name}" name="user_id" />`;
 document.getElementById("chatUploadForm").innerHTML += `<input type="hidden" value="${name}" name="user_id" />`;

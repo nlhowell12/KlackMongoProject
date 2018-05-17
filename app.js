@@ -137,12 +137,13 @@ io.on('connection', (socket) => {
 
     // Recevies new user information and creates that entry in the database, assuming that there isn't already a profile with the same name in the DB
 
-    socket.on('user', ({name, pic, socketID}) => {
-        let user = new User({name, pic})
+    socket.on('user', ({name, socketID}) => {
+        let user = new User({name})
         User.update({name}, {
             $set: {
                 socketID,
-                active: true
+                active: true,
+
             },
             $setOnInsert: user
         }, {
@@ -183,6 +184,8 @@ io.on('connection', (socket) => {
 
 // handles pic uploading
 app.post('/upload', upload.single('fileToUpload'), function (req, res) {
+    console.log(req.file.filename)
+    console.log(req.body.user_id)
     profilePics[req.body.user_id] = req.file.filename;
     User.update({
         name: req.body.user_id
@@ -195,7 +198,7 @@ app.post('/upload', upload.single('fileToUpload'), function (req, res) {
             console.log("User created", numAffected);
         }
     );
-    res.redirect('/');
+    res.end();
 })
 
 app.post("/uploadChat", upload.single('chatFile'), function (req, res) {
