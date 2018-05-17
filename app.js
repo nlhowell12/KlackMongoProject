@@ -172,7 +172,8 @@ io.on('connection', (socket) => {
             return User.find()
         })
         .then((users) => {
-            io.sockets.emit('activeUsers', {users})
+            console.log(users);
+            socket.broadcast.emit('activeUsers', {users})
         })
         .catch(err => {
             console.error(err);

@@ -137,7 +137,7 @@ else {
     
     if(isImage) {
         messagesDiv.innerHTML +=
-        `<div class="message"><strong>${msg.name}</strong>(${d.toLocaleString()}) :<br><img class="mobileImg" src=${msg.message}></div>`;;
+        `<div class="message"><strong>${msg.name}</strong>(${d.toLocaleString()}) :<br><img class="mobileImg" src="${msg.message}"></div>`;;
     } else {
         messagesDiv.innerHTML +=
         `<div class="message"><strong>${msg.name}</strong>(${d.toLocaleString()}) :<br>${msg.message}</div>`;;
