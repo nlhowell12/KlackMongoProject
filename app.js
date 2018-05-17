@@ -5,6 +5,7 @@ const multer = require('multer');
 const fs = require('fs');
 const cors = require('cors');
 const app = express()
+const gm = require('gm').subClass({ imageMagick: true });
 
 const dbName = 'klack';
 const DB_USER = 'admin';
@@ -23,10 +24,10 @@ app.use(express.json())
 app.use(cors())
 
 // Mongo stuff
-mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
-    console.log("Successfully connected to database");
-});
-// mongoose.connect('mongodb://localhost/klack')
+// mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
+// console.log("Successfully connected to database");
+// });
+mongoose.connect('mongodb://localhost/klack')
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error: '));
@@ -44,9 +45,7 @@ var storage = multer.diskStorage({
         cb(null, Date.now() + '-' + file.originalname)
     }
 });
-const upload = multer({
-    storage: storage
-});
+const upload = multer({ storage: storage });
 
 // object of names and their respective pic filenames
 let profilePics = {
@@ -186,8 +185,8 @@ io.on('connection', (socket) => {
 app.post('/upload', upload.single('fileToUpload'), function (req, res) {
     profilePics[req.body.user_id] = req.file.filename;
     User.update({
-            name: req.body.user_id
-        }, {
+        name: req.body.user_id
+    }, {
             $set: {
                 pic: req.file.filename
             }
@@ -196,5 +195,22 @@ app.post('/upload', upload.single('fileToUpload'), function (req, res) {
             console.log("User created", numAffected);
         }
     );
+    res.redirect('/');
+})
+
+app.post("/uploadChat", upload.single('chatFile'), function (req, res) {
+    const now = Date.now()
+    gm(`./public/uploads/${req.file.filename}`)
+        .resize('680>')
+        .noProfile()
+        .compress("JPEG")
+        .write(`./public/uploads/${req.file.filename}`, function (err) {
+            if (!err) console.log('done');
+        });
+    Message.create({
+        name: req.body.user_id,
+        message: req.file.filename,
+        timestamp: now,
+    })
     res.redirect('/');
 })

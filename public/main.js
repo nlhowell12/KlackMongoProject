@@ -5,8 +5,8 @@ const ding = new Audio('typewriter_ding.m4a');
 const hamburger = document.getElementById('hamburger');
 
 // Connects to the server
-const socket = io.connect('https://xforceklack.herokuapp.com/')
-// const socket = io.connect("http://localhost:3000", {'sync disconnect on unload': true});
+// const socket = io.connect('https://xforceklack.herokuapp.com/')
+const socket = io.connect("http://localhost:3000")
 
 // text to emoji converter library
 const emoji = new EmojiConvertor();
@@ -84,12 +84,20 @@ function appendMessage(msg, pics) {
     })
     
     if (userandpic.pic !== "none") {
+        if(msg.message.includes("JPG" || 'jpg' || 'PNG' || 'png' || 'JPEG' || 'jpeg' || 'GIF' || 'gif')) {
+            messagesDiv.innerHTML +=
+        `<div class="message"><img src="${userandpic.pic}" class="profilePic"><strong>${msg.name} </strong><font size="2">(${d.toLocaleString()})</font> :<br> <img class="mobileImg" src=${msg.message}></div>`;
+        } else {
         messagesDiv.innerHTML +=
         `<div class="message"><img src="${userandpic.pic}" class="profilePic"><strong>${msg.name} </strong><font size="2">(${d.toLocaleString()})</font> :<br>${msg.message}</div>`;
-    } else {
+    }} else {
+        if(msg.message.includes("JPG" || 'jpg' || 'PNG' || 'png' || 'JPEG' || 'jpeg' || 'GIF' || 'gif')) {
+            messagesDiv.innerHTML +=
+        `<div class="message"><strong>${msg.name}</strong>(${d.toLocaleString()}) :<br><img class="mobileImg" src=${msg.message}></div>`;;
+        } else {
         messagesDiv.innerHTML +=
         `<div class="message"><strong>${msg.name}</strong>(${d.toLocaleString()}) :<br>${msg.message}</div>`;;
-    }
+    }}
 }
 
 // Prints out all the messages in the database when the server sends it on initial connection
@@ -156,3 +164,4 @@ document.getElementById("send-icon").addEventListener("click", (event) => {
 
 // adds a hidden field to the upload form with the user's name (this is required to link them later)
 document.getElementById("uploadForm").innerHTML += `<input type="hidden" value="${name}" name="user_id" />`;
+document.getElementById("chatUploadForm").innerHTML += `<input type="hidden" value="${name}" name="user_id" />`;
