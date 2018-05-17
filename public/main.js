@@ -21,7 +21,7 @@ else {
     userList.style.display = 'none'
 }
 });
-
+// event handler for profile picture upload
 const uploadFormBut = document.getElementById('uploadFormBut');
 uploadFormBut.addEventListener('click', (event) => {
 let formData = new FormData();
@@ -38,6 +38,7 @@ fetch("/upload", {
 })
 })
 
+// event handler for chat picture upload
 const chatPicBut = document.getElementById('chatPictureButton');
 chatPicBut.addEventListener('click', (event) => {
 let formData = new FormData();

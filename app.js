@@ -24,10 +24,10 @@ app.use(express.json())
 app.use(cors())
 
 // Mongo stuff
-// mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
-// console.log("Successfully connected to database");
-// });
-mongoose.connect('mongodb://localhost/klack')
+mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
+console.log("Successfully connected to database");
+});
+// mongoose.connect('mongodb://localhost/klack')
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error: '));
@@ -206,20 +206,21 @@ app.post("/uploadChat", upload.single('chatFile'), function (req, res) {
         .noProfile()
         .write(`./public/uploads/${req.file.filename}`, function (err) {
             if (!err) console.log('done');
+            Message.create({
+                name: req.body.user_id,
+                message: req.file.filename,
+                timestamp: now,
+            })
+            .then(() => {
+                User.find()
+                .then((users) => {
+                    io.sockets.emit('chat', {message: {message: req.file.filename, name: req.body.user_id, timestamp: now}, pics: users})
+                })
+                .catch(err => {
+                    console.log("Error",err)
+                }) 
+            })
+            res.end();
         });
-    Message.create({
-        name: req.body.user_id,
-        message: req.file.filename,
-        timestamp: now,
-    })
-    .then(() => {
-        User.find()
-        .then((users) => {
-            io.sockets.emit('chat', {message: {message: req.file.filename, name: req.body.user_id, timestamp: now}, pics: users})
-        })
-        .catch(err => {
-            console.log("Error",err)
-        }) 
-    })
-    res.end();
+    
 })
