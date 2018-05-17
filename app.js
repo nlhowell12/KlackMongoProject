@@ -211,5 +211,14 @@ app.post("/uploadChat", upload.single('chatFile'), function (req, res) {
         message: req.file.filename,
         timestamp: now,
     })
+    .then(() => {
+        User.find()
+        .then((users) => {
+            io.sockets.emit('chat', {message: {message: req.file.filename, name: req.body.user_id}, pics: users})
+        })
+        .catch(err => {
+            console.log("Error",err)
+        }) 
+    })
     res.end();
 })
