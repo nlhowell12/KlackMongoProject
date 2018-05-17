@@ -16,11 +16,17 @@ const PORT = process.env.PORT || 3000;
 const socket = require('socket.io');
 const server = app.listen(PORT);
 const io = socket(server);
+const path = './public/uploads';
 
 app.use(express.static("./public"))
 app.use(express.static("./public/uploads"))
 app.use(express.json())
 app.use(cors())
+
+
+
+app.set('views', './views');
+app.set('view engine', 'pug');
 
 // Mongo stuff
 mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
@@ -82,6 +88,13 @@ function userSortFn(a, b) {
 }
 
 let usersTimestamps = [];
+
+app.get('/', function (req, res) {  
+    fs.readdir(path, function(err, items) {   
+        res.render('index',{title: 'KenzieGram'});
+
+    });
+})
 
 io.on('connection', (socket) => {
     console.log(`Connected on Port: ${PORT}`)

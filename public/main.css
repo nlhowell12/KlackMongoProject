@@ -1,139 +1,562 @@
-html {
-  height: 100%;
-  margin: 0;
+/* Overwrite Materialize */
+#blue {
+    color: #2196F3;
+}
+#red{
+  color: #f44336
+}
+#green{
+  color: #4CAF50 
 }
 
-body {
-  font-family: sans-serif;
-  height: 100%;
-  display: flex;
-  margin: 0;
-}
-
-#fileToUpload {
-width: 180px;
-}
-#userpane {
-  background: #00366f;
-  width: 200px;
-  height: 100%;
-  padding: 0 20px;
-  color: white;
-}
-
-#users {
+.sidenav{
+  width: 20vw;
   overflow-y: scroll;
-  height: calc(100% - 250px);
+  overflow-x: hidden;
 }
-
-#uploadDiv {
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  /* background-color: blue; */
-  height: 125px;
-  width: 200px;
+#chat{
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
-
-.profilePic {
-  object-fit: cover;
-  height: 50px;
-  width: 50px;
-  border-radius: 25px;
-  margin-right: 5px;
-  background-color: blueviolet;
-}
-
-.active {
-  color: lightgray;
-}
-
-.inactive {
-  color: darkgray;
-}
-
-.cyan {
-  color: cyan;
-}
-
-#mainpane {
+#chat-form{
+  max-height: 10vh;
   width: 100%;
-  position: relative;
 }
 
-h1 {
-  background: url('klack.png') no-repeat;
-  background-size: contain;
+.fixed-action-btn{
+  position: relative;
+  right: 130px;
+  
+  bottom: 48.5px
+  }
+  .fixed-action-btn ul {
+    left: 0;
+    right: 0;
+    text-align: none;
+    position: absolute;
+    bottom: 64px;
+    margin: 0;
+    visibility: hidden;
+}
+
+/* New Css */
+#send{
+  margin: 0 1px
+}
+#upload{
+  margin: 0 1px
+}
+
+header, main, footer {
+  padding-left: 210px;
+}
+
+      
+
+#sidenav{
+  max-height: 60px;
+  margin-bottom: 0px;
+}
+
+#klack{
+  max-width: 60px;
+  max-height: 60px; 
+}
+
+#KlackContainer{
+  max-height: 100px;
+  padding: 0px;
+  margin-bottom: 0px;
+  max-width: 100px;
+  margin-left: 10px
+}
+
+.sidenav-header{
   padding-left: 60px;
   color: white;
   font-family: 'Open Sans';
   font-size: 40px;
 }
 
-#text {
-  width: 75vw;
-  margin-top: 50px;
-  height: 20px;
-  background-color: transparent;
+#h1 {
+  color: white;
+  font-family: 'Open Sans';
+  font-size: 40px;
+  margin-top: 6px;
+  margin-bottom: 0px;
+  margin-left: 10px
+}
+
+/* Active User List */
+#userpane {
+  width: 100%;
+  height: 100%;
+  padding: 0 20px;
+  color: white;
+}
+#users {
+  color: #ccc; 
+}
+.inactive{
+  color: #ccc; 
+}
+.active {
+  color: #2196F3;
+}
+
+
+
+
+#chat{
+  overflow: hidden;
+  margin-left: 2%;
+  margin-right: 0px;
+  max-width: 100%;
+  
+}
+#20 {
+  max-width: 10vw;
+  max-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  
+}
+.mainpane {
+  /* border:1px solid red; */
+  height: 85vh;
+  width: 100%;
+  
+  
 }
 
 #messageslist {
-  height: calc(100% - 203px);
+  
+  height: 100%;
   overflow-y: scroll;
 }
 
-#messageheader {
-  font-size: 20px;
-  padding: 20px;
+
+/* ////////////////////////////////////// */
+/* //////////////-Chat-box-Styling-//////////////// */
+
+.chatlogs {
+  padding: 10px;
+  width: 100%;
+  height: 450px;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
-.message {
-  padding: 5px 20px;
-  font-size: 22px;
+.chatlogs::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chatlogs::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: rgba(0, 0, 0, .1)
+}
+
+.chat {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  margin-bottom: 0px;
+}
+
+.chat .user-photo {
+  width: 60px;
+  height: 60px;
+  background: #ccc;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.chat .user-photo img {
+  width: 100%;
+}
+
+.chat .chat-message {
+  width: 70%;
+  padding: 15px;
+  margin: 5px 10px 0;
+  background: #1ddced;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.friend .chat-message {
+  background: #1adda4;
+}
+
+.self .chat-message {
+  background: #1ddced;
+  order: 1;
+}
+
+
+
+/* Chatform  */
+/* Floating Action button */
+#floatContainer{
+  padding-top: 0px;
+  margin-bottom: 15px;
+}
+#floatPop{
+  bottom: 30px;
+  text-align: right;
+}
+#floatBtn{
+
+
+}
+#floatIcon{
+
+  
+}
+
+/* chatform boxes */
+.chat-form {
+  margin-top: 20px;
+  display: flex;
+  align-items: flex-start;
+  /* border: 2px red solid; */
+  justify-content: center;
+  
+}
+
+.chat-form textarea {
+  background: #fbfbfb;
+  flex-basis: 1;
+  height: 40px;
+  border: 2px solid #eee;
+  border-radius: 3px;
+  resize: none;
+  padding: 10px;
+  margin-left: 10px;
+  font-size: 15px;
+  color: #333;
   margin-bottom: 10px;
 }
 
-.message:hover {
-  background: #f8f8f8;
+.chat-form textarea:focus {
+  background: #fff;
 }
 
-#newmessage {
-  position: absolute;
-  border-radius: 10px;
-  border: 2px solid lightgray;
-  padding: 5px;
-  width: 50%;
-  margin: 20px;
+.chat-form textarea::-webkit-scrollbar {
+  width: 8px;
 }
 
-.message:hover {
-  background: #f8f8f8;
+.chat-form textarea::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: rgba(0, 0, 0, .1);
+  
+  
 }
 
-#send-icon {
-  position: relative;
-  top: 30px;
-  z-index: 1;
-  float: right;
-  border: none;
+.chat-form button {
+  background: #1ddced;
   height: 40px;
-  width: 40px;
-  background: url(./blue-arrow.png) no-repeat;
+  flex-basis: 1;
+  font-size: 10px;
+  color: #fff;
+  border: none;
+  margin: 0 10px;
+  border-radius: 3px;
+  /* box-shadow: 0 3px #0eb2c1; */
+  cursor: pointer;
+  -webkit-transition: background .2s ease;
+  -moz-transition: background .2s ease;
+  -o-transition: background .2s ease;
 }
 
-/* styling for emoji icon */
-
-svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#objects) {
-  width: 36px;
-  height: 36px;
-  position: absolute;
-  left: -75px;
-  bottom: -55px;
+.card-size {
+  display: flex;
 }
+
+.welcome-text {
+  font-size: 80px;
+  text-shadow: 0px 0px 4px black;
+}
+
+.welcome-subtext {
+  font-size: 80px;
+  text-shadow: 0px 0px 4px black;
+}
+
+.parallax img {
+  opacity: 0.5;
+}
+
+.shadow {
+  box-shadow: 0px 10px 5px black;
+}
+
+/* //////// */
+
 
 /* //FOR MOBILE */
 
-@media only screen and (max-width: 580px) {
+
+
+@media only screen and (max-width: 992px) {
+  header, main, footer {
+    padding-left: 0;
+    
+  }
+  body {
+    background-color: lightblue;
+    
+}
+  /* Overwrite Materialize */
+#blue {
+    color: #2196F3;
+}
+#red{
+  color: #f44336
+}
+#green{
+  color: #4CAF50 
+}
+
+
+#chat{
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+#chat-form{
+  max-height: 10vh;
+  width: 100%;
+}
+
+.fixed-action-btn{
+  position: relative;
+  right: 130px;
+  
+  bottom: 48.5px
+  }
+  .fixed-action-btn ul {
+    left: 0;
+    right: 0;
+    text-align: none;
+    position: absolute;
+    bottom: 64px;
+    margin: 0;
+    visibility: hidden;
+}
+
+/* New Css */
+#send{
+  margin: 0 1px
+}
+#upload{
+  margin: 0 1px
+}
+
+header, main, footer {
+  padding-left: 210px;
+}
+
+      
+
+
+
+
+
+
+#chat{
+  overflow: hidden;
+  margin-left: 2%;
+  margin-right: 0px;
+  max-width: 100%;
+  
+}
+#20 {
+  max-width: 10vw;
+  max-height: 80vh;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  
+}
+.mainpane {
+  /* border:1px solid red; */
+  height: 70vh;
+  width: 100%;
+  background-color: red;
+  
+}
+
+#messageslist {
+  
+  height: 100%;
+  overflow-y: scroll;
+}
+
+
+/* ////////////////////////////////////// */
+/* //////////////-Chat-box-Styling-//////////////// */
+
+.chatlogs {
+  padding: 10px;
+  width: 100%;
+  height: 450px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.chatlogs::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chatlogs::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: rgba(0, 0, 0, .1)
+}
+
+.chat {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  margin-bottom: 0px;
+}
+
+.chat .user-photo {
+  width: 60px;
+  height: 60px;
+  background: #ccc;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.chat .user-photo img {
+  width: 100%;
+}
+
+.chat .chat-message {
+  width: 70%;
+  padding: 15px;
+  margin: 5px 10px 0;
+  background: #1ddced;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.friend .chat-message {
+  background: #1adda4;
+}
+
+.self .chat-message {
+  background: #1ddced;
+  order: 1;
+}
+
+
+
+/* Chatform  */
+/* Floating Action button */
+#floatContainer{
+  padding-top: 0px;
+  margin-bottom: 15px;
+}
+#floatPop{
+  bottom: 30px;
+  text-align: right;
+}
+#floatBtn{
+
+
+}
+#floatIcon{
+
+  
+}
+
+/* chatform boxes */
+.chat-form {
+  margin-top: 20px;
+  display: flex;
+  align-items: flex-start;
+  /* border: 2px red solid; */
+  justify-content: center;
+  
+}
+
+.chat-form textarea {
+  background: #fbfbfb;
+  flex-basis: 1;
+  height: 40px;
+  border: 2px solid #eee;
+  border-radius: 3px;
+  resize: none;
+  padding: 10px;
+  margin-left: 10px;
+  font-size: 15px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.chat-form textarea:focus {
+  background: #fff;
+}
+
+.chat-form textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-form textarea::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: rgba(0, 0, 0, .1);
+  
+  
+}
+
+.chat-form button {
+  background: #1ddced;
+  height: 40px;
+  flex-basis: 1;
+  font-size: 10px;
+  color: #fff;
+  border: none;
+  margin: 0 10px;
+  border-radius: 3px;
+  /* box-shadow: 0 3px #0eb2c1; */
+  cursor: pointer;
+  -webkit-transition: background .2s ease;
+  -moz-transition: background .2s ease;
+  -o-transition: background .2s ease;
+}
+
+.card-size {
+  display: flex;
+}
+
+.welcome-text {
+  font-size: 80px;
+  text-shadow: 0px 0px 4px black;
+}
+
+.welcome-subtext {
+  font-size: 80px;
+  text-shadow: 0px 0px 4px black;
+}
+
+.parallax img {
+  opacity: 0.5;
+}
+
+.shadow {
+  box-shadow: 0px 10px 5px black;
+}
+
+    
+    
+  
+}
+
+
+
+/* @media only screen and (max-width: 580px) {
   body {
     flex-direction: column;
   }
@@ -205,7 +628,7 @@ svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#object
     word-wrap: break-word;
   }
   /* No emoji option for mobile. */
-  svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#objects) {
+  /* svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#objects) {
     display: none;
   }
-}
+} */ 

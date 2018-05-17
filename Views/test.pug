@@ -1,0 +1,40 @@
+doctype
+html(lang="en")
+    head
+        include includes/header.pug
+        title= title
+    main
+        body   
+            nav
+                ul#slide-out.sidenav.sidenav-fixed
+                    li
+                        div.user-view
+                            div.background
+                                img(src='images/klack.png')
+                            a(href='#user')
+                                img.circle(src='images/klack.png')
+                            a(href='#name')
+                                span.white-text.name John Doe
+                            a(href='#email')
+                                span.white-text.email jdandturk@gmail.com
+                    li
+                        a(href='#!') First Link With Icon
+                        i.material-icons cloud 
+                        
+                    li
+                        a(href='#!') Second Link
+                    li
+                        div.divider
+                    li
+                        a.subheader Subheader
+                    li
+                        a.waves-effect(href='#!') Third Link With Waves
+
+                a.sidenav-trigger(href='#', data-target='slide-out')
+                    i.material-icons menu
+            footer
+                include includes/footer.pug
+
+                
+                
+                

@@ -1,0 +1,114 @@
+doctype
+html(lang="en")
+    head
+        include includes/header.pug
+        title= title
+    main
+
+        body
+            nav.hide-on-large-only
+                .nav-wrapper
+                    a.brand-logo(href='#!') Logo
+                    a.sidenav-trigger(href='#', data-target='mobile-demo')
+                        i.material-icons menu
+                    ul.right.hide-on-med-and-down
+                        li
+                            a(href='sass.html') Sass
+                        li
+                            a(href='badges.html') Components
+                        li
+                            a(href='collapsible.html') Javascript
+                        li
+                            a(href='mobile.html') Mobile
+                ul#mobile-demo.sidenav
+                    li
+                        a(href='sass.html') Sass
+                    li
+                        a(href='badges.html') Components
+                    li
+                        a(href='collapsible.html') Javascript
+                    li
+                        a(href='mobile.html') Mobile
+            div#20.row
+                div.col.s1
+                    ul#slide-out.sidenav.sidenav-fixed
+                        li.blue
+                            div#sidenav.row.background.blue
+                                div.col.s1#KlackContainer
+                                    img#klack.square(src="images/klack.png")
+                                div.col.s2.offset-s2.center-align
+                                    p#h1 Klack
+                        //- li
+
+                        //-     a(href="#name")
+                        //-         span.black-text.name John Doe
+
+                        //-     a(href="#email")
+                        //-         span.black-text.email jdandturk@gmail.com
+                        ul.collapsible
+                            li
+                                .collapsible-header
+                                    i.material-icons face
+                                    | Active User List
+                                .collapsible-body
+                                    div#userpane
+                                        div#users
+                                            span.inactive ○ AAA
+                                            br
+                                            span.inactive ○ Adrian
+                                            br
+                                            span.active
+                                                span#green ●
+                                                |  aj
+                                            br
+                                
+                            div#uploadDiv
+                                //- form#uploadForm(action="/upload", method="post", enctype="multipart/form-data")
+                                //-     input#fileToUpload.btn(type="file" name="fileToUpload")
+                                //-     input.btn(type="submit" value="Update profile picture" name="submit")
+                div.col.s12
+                    div#chat
+                        div.mainpane.chatbox
+                            div#messageslist.chatlogs
+                                div.chat.self
+                                    div.user-photo  
+                                    p.chat-message
+                                        | hello
+                        div#chat-form.chat-form
+                            textarea#textArea
+                            button#send.btn.waves-effect.waves-light.blue(type="submit" name="action")
+                                i.material-icons.center send
+                            button#upload.btn.waves-effect.waves-light.red(type="submit" name="action")
+                                i.material-icons.center add_to_photos
+                        //- #floatContainer.fixed-action-btn.right-align
+                        //-     a#floatBtn.btn-floating.btn-small.red
+                        //-         i#floatIcon.small.material-icons mode_edit
+                        //-     ul#floatPop
+                        //-         li
+                        //-             a.btn-floating.btn-small.red
+                        //-                 i.material-icons add_to_photos
+                        //-         li
+                        //-             a.btn-floating.btn-small.yellow.darken-1
+                        //-                 i.material-icons local_pizza
+                            //- li
+                            //-     a.btn-floating.btn-small.green
+                            //-         i.material-icons publish
+                            //- li
+                            //-     a.btn-floating.btn-small.blue
+                            //-         i.material-icons attach_file
+
+                        
+    
+            
+                        
+                       
+
+                
+                
+                
+                
+    
+        script(src="https://cdn.jsdelivr.net/npm/emoji-js@3.4.0/lib/emoji.min.js")
+        script(src="main.js")
+    footer
+        include includes/footer.pug
