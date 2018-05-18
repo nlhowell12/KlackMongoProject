@@ -208,6 +208,9 @@ svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#object
     width: 100%;
     word-wrap: break-word;
   }
+  .mobileImg {
+    width: 95%;
+  }
   /* No emoji option for mobile. */
   svg:not(#faces):not(#animals):not(#food):not(#sport):not(#transport):not(#objects) {
     display: none;

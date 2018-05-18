@@ -5,7 +5,9 @@ const multer = require('multer');
 const fs = require('fs');
 const cors = require('cors');
 const app = express()
+const gm = require('gm').subClass({ imageMagick: true });
 
+// Mlab Database Information
 const dbName = 'klack';
 const DB_USER = 'admin';
 const DB_PASSWORD = 'admin';
@@ -22,9 +24,15 @@ app.use(express.static("./public/uploads"))
 app.use(express.json())
 app.use(cors())
 
+// If this directory doesn't exist, then make it.
+var dir = './public/uploads';
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}
+
 // Mongo stuff
 mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
-    console.log("Successfully connected to database");
+console.log("Successfully connected to database");
 });
 // mongoose.connect('mongodb://localhost/klack')
 
@@ -44,9 +52,7 @@ var storage = multer.diskStorage({
         cb(null, Date.now() + '-' + file.originalname)
     }
 });
-const upload = multer({
-    storage: storage
-});
+const upload = multer({ storage: storage });
 
 // object of names and their respective pic filenames
 let profilePics = {
@@ -73,12 +79,11 @@ var userSchema = new Schema({
 });
 var User = mongoose.model('User', userSchema);
 
+
 // Saves the usernames and most recent timestamps of user messages to populate the 10 most recently active users
 
 io.on('connection', (socket) => {
     console.log(`Connected on Port: ${PORT}`)
-
-
 
     User.find()
         .then((users) => {
@@ -89,15 +94,18 @@ io.on('connection', (socket) => {
                 });
             })
         })
-        .catch(err => {
-            console.error(err);
-        })
 
-    socket.on('chat', (data) => {
+    })
+    .catch(err => {
+        console.error(err);
+    })    
+    
+    // When the client sends a chat message, save it in the database
+    // Then send the new message and the user to all connected sockets to append
+    socket.on('chat', (data) =>{
         // get the current time
         const now = Date.now();
-
-
+        
         // Posts message to the db
         let message = new Message({
             name: data.name,
@@ -176,6 +184,8 @@ io.on('connection', (socket) => {
             })
     })
 
+ // When a socket disconnects, update the database to show that user has disconnected
+    // Then broadcast to all sockets, except the closed one, to update the User List
     socket.on('disconnect', () => {
         User.update({
                 "socketID": socket.id
@@ -200,15 +210,14 @@ io.on('connection', (socket) => {
                 console.error(err);
             })
     })
-
 })
 
 // handles pic uploading
 app.post('/upload', upload.single('fileToUpload'), function (req, res) {
     profilePics[req.body.user_id] = req.file.filename;
     User.update({
-            name: req.body.user_id
-        }, {
+        name: req.body.user_id
+    }, {
             $set: {
                 pic: req.file.filename
             }
@@ -217,5 +226,33 @@ app.post('/upload', upload.single('fileToUpload'), function (req, res) {
             console.log("User created", numAffected);
         }
     );
-    res.redirect('/');
+    res.end();
+})
+
+// Receives a file to be uploaded into the chat, standardizes the format, and saves it in local storage
+// Then creates a message, saves it in the database, and sends all client the message to append
+app.post("/uploadChat", upload.single('chatFile'), function (req, res) {
+    const now = Date.now()
+    gm(`./public/uploads/${req.file.filename}`)
+        .resize('680>')
+        .noProfile()
+        .write(`./public/uploads/${req.file.filename}`, function (err) {
+            if (!err) console.log('done');
+            Message.create({
+                name: req.body.user_id,
+                message: req.file.filename,
+                timestamp: now,
+            })
+            .then(() => {
+                User.find()
+                .then((users) => {
+                    io.sockets.emit('chat', {message: {message: req.file.filename, name: req.body.user_id, timestamp: now}, pics: users})
+                })
+                .catch(err => {
+                    console.log("Error",err)
+                }) 
+            })
+            res.end();
+        });
+    
 })
