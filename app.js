@@ -164,7 +164,7 @@ io.on('connection', (socket) => {
             .then((users) => {
                 // console.log(usersTimestamps)
                 users.sort(function(a, b) {return b.timestamp - a.timestamp})
-                if (users.length > 11) {
+                if (users.length > 10) {
                     users = users.slice(0, 10)
                 };
                 socket.emit('activeUsers', {
@@ -189,7 +189,7 @@ io.on('connection', (socket) => {
             })
             .then((users) => {
                 users.sort(function(a, b) {return b.timestamp - a.timestamp})
-                if (users.length > 11) {
+                if (users.length > 10) {
                     users = users.slice(0, 10)
                 };
                 io.sockets.emit('activeUsers', {
