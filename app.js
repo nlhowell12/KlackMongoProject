@@ -31,10 +31,10 @@ if (!fs.existsSync(dir)){
 }
 
 // Mongo stuff
-mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
-console.log("Successfully connected to database");
-});
-// mongoose.connect('mongodb://localhost/klack')
+// mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
+// console.log("Successfully connected to database");
+// });
+mongoose.connect('mongodb://localhost/klack')
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error: '));
@@ -94,10 +94,8 @@ io.on('connection', (socket) => {
                 });
             })
         })
-
-    })
-    .catch(err => {
-        console.error(err);
+        .catch(err => {
+            console.error(err);
     })    
     
     // When the client sends a chat message, save it in the database
@@ -211,7 +209,6 @@ io.on('connection', (socket) => {
             })
     })
 })
-
 // handles pic uploading
 app.post('/upload', upload.single('fileToUpload'), function (req, res) {
     profilePics[req.body.user_id] = req.file.filename;
