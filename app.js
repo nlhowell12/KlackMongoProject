@@ -68,44 +68,35 @@ var userSchema = new Schema({
     socketID: String,
     name: String,
     pic: String,
-    active: Boolean
+    active: Boolean,
+    timestamp: Number
 });
 var User = mongoose.model('User', userSchema);
 
-function userSortFn(a, b) {
-    var nameA = a.name.toUpperCase(); // ignore upper and lowercase
-    var nameB = b.name.toUpperCase(); // ignore upper and lowercase
-    if (nameA < nameB) {
-        return -1;
-    }
-    if (nameA > nameB) {
-        return 1;
-    }
-    // names must be equal
-    return 0;
-}
-
-let usersTimestamps = [];
+// Saves the usernames and most recent timestamps of user messages to populate the 10 most recently active users
 
 io.on('connection', (socket) => {
     console.log(`Connected on Port: ${PORT}`)
 
-    
+
 
     User.find()
-    .then((users) => {
-        Message.find((err, messages) => {
-            socket.emit('initial', {messages, pics: users});
+        .then((users) => {
+            Message.find((err, messages) => {
+                socket.emit('initial', {
+                    messages,
+                    pics: users
+                });
+            })
         })
-    })
-    .catch(err => {
-        console.error(err);
-    })    
-    
-    socket.on('chat', (data) =>{
+        .catch(err => {
+            console.error(err);
+        })
+
+    socket.on('chat', (data) => {
         // get the current time
         const now = Date.now();
-        
+
 
         // Posts message to the db
         let message = new Message({
@@ -114,20 +105,23 @@ io.on('connection', (socket) => {
             timestamp: now,
         })
         message.save()
-        .then(data => {
-            console.log('msg saved to the database:', data);
-        })
-        .catch(err => {
-            console.log('Unable to save to database');
-        });
-        
+            .then(data => {
+                console.log('msg saved to the database:', data);
+            })
+            .catch(err => {
+                console.log('Unable to save to database');
+            });
+
         User.find()
-        .then((users) => {
-            io.sockets.emit('chat', {message, pics: users})
-        })
-        .catch(err => {
-            console.log("Error",err)
-        }) 
+            .then((users) => {
+                io.sockets.emit('chat', {
+                    message,
+                    pics: users
+                })
+            })
+            .catch(err => {
+                console.log("Error", err)
+            })
 
     })
 
@@ -138,46 +132,73 @@ io.on('connection', (socket) => {
 
     // Recevies new user information and creates that entry in the database, assuming that there isn't already a profile with the same name in the DB
 
-    socket.on('user', ({name, pic, socketID}) => {
-        let user = new User({name, pic})
-        User.update({name}, {
-            $set: {
-                socketID,
-                active: true
-            },
-            $setOnInsert: user
-        }, {
-            upsert: true
+    socket.on('user', ({
+        name,
+        pic,
+        socketID
+    }) => { 
+        let timestamp = Date.now();
+        let user = new User({
+            name,
+            pic,
+            timestamp
         })
-        .then((numAffected) => {
-            console.log("User created", numAffected)
-        })
-        .then(() => {
-            return User.find()
-        })
-        .then((users) => {
-            socket.emit('activeUsers', {users})
-        })
-        .catch(err => {
-            console.log(err);
-        })
+        User.update({
+                name
+            }, {
+                $set: {
+                    socketID,
+                    active: true,
+
+                },
+                $setOnInsert: user
+            }, {
+                upsert: true
+            })
+            .then((numAffected) => {
+                console.log("User created", numAffected)
+            })
+            .then(() => {
+                return User.find()
+            })
+            .then((users) => {
+                // console.log(usersTimestamps)
+                users.sort(function(a, b) {return b.timestamp - a.timestamp})
+                if (users.length > 11) {
+                    users = users.slice(0, 10)
+                };
+                socket.emit('activeUsers', {
+                    users
+                })
+            })
+            .catch(err => {
+                console.log(err);
+            })
     })
-    
+
     socket.on('disconnect', () => {
-        User.update({"socketID": socket.id}, {
-            $set: {
-                active: false
-            }
-        })
-        .then(() =>{
-            return User.find()
-        })
-        .then((users) => {
-            io.sockets.emit('activeUsers', {users})
-        })
-        .catch(err => {
-            console.error(err);
-        })    
+        User.update({
+                "socketID": socket.id
+            }, {
+                $set: {
+                    active: false
+                }
+            })
+            .then(() => {
+                return User.find()
+            })
+            .then((users) => {
+                users.sort(function(a, b) {return b.timestamp - a.timestamp})
+                if (users.length > 11) {
+                    users = users.slice(0, 10)
+                };
+                io.sockets.emit('activeUsers', {
+                    users
+                })
+            })
+            .catch(err => {
+                console.error(err);
+            })
     })
 
 })
