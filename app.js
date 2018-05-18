@@ -167,7 +167,7 @@ io.on('connection', (socket) => {
                 if (users.length > 10) {
                     users = users.slice(0, 10)
                 };
-                socket.emit('activeUsers', {
+                io.sockets.emit('activeUsers', {
                     users
                 })
             })
