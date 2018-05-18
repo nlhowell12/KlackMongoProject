@@ -13,6 +13,7 @@ const emoji = new EmojiConvertor();
 
 let name = "";
 
+// Handles the hamburger menu in mobile
 hamburger.addEventListener('click', function(){
 if (userList.style.display === 'none') {
     userList.style.display = 'block'    
@@ -21,6 +22,7 @@ else {
     userList.style.display = 'none'
 }
 });
+
 // event handler for profile picture upload
 const uploadFormBut = document.getElementById('uploadFormBut');
 uploadFormBut.addEventListener('click', (event) => {
@@ -56,7 +58,7 @@ fetch("/uploadChat", {
 })
 
 
-
+// When the client connects, run this
 socket.on('connect', () => {
 determineName();
 })
@@ -112,6 +114,8 @@ var userandpic = pics.find(function(user) {
         return null;
     }
 })
+
+// list of file types identified as images
 const checkArr = [".JPG", '.jpg', '.PNG', '.png', '.JPEG', '.jpeg', '.GIF', '.gif']
 
 if (userandpic) {

@@ -7,6 +7,7 @@ const cors = require('cors');
 const app = express()
 const gm = require('gm').subClass({ imageMagick: true });
 
+// Mlab Database Information
 const dbName = 'klack';
 const DB_USER = 'admin';
 const DB_PASSWORD = 'admin';
@@ -23,8 +24,8 @@ app.use(express.static("./public/uploads"))
 app.use(express.json())
 app.use(cors())
 
+// If this directory doesn't exist, then make it.
 var dir = './public/uploads';
-
 if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
 }
@@ -90,13 +91,11 @@ function userSortFn(a, b) {
     return 0;
 }
 
-let usersTimestamps = [];
-
+// When a connection is made with the server, this handles the socket that connects
 io.on('connection', (socket) => {
     console.log(`Connected on Port: ${PORT}`)
 
-    
-
+    // Finds the current list of messages and users from the DB and repopulates the client
     User.find()
     .then((users) => {
         Message.find((err, messages) => {
@@ -107,6 +106,8 @@ io.on('connection', (socket) => {
         console.error(err);
     })    
     
+    // When the client sends a chat message, save it in the database
+    // Then send the new message and the user to all connected sockets to append
     socket.on('chat', (data) =>{
         // get the current time
         const now = Date.now();
@@ -141,7 +142,7 @@ io.on('connection', (socket) => {
     })
 
     // Recevies new user information and creates that entry in the database, assuming that there isn't already a profile with the same name in the DB
-
+    // Returns the new user list to all connected sockets to repopulate the User List
     socket.on('user', ({name, socketID}) => {
         let user = new User({name})
         User.update({name}, {
@@ -168,6 +169,8 @@ io.on('connection', (socket) => {
         })
     })
     
+    // When a socket disconnects, update the database to show that user has disconnected
+    // Then broadcast to all sockets, except the closed one, to update the User List
     socket.on('disconnect', () => {
         User.update({"socketID": socket.id}, {
             $set: {
@@ -205,6 +208,8 @@ app.post('/upload', upload.single('fileToUpload'), function (req, res) {
     res.end();
 })
 
+// Receives a file to be uploaded into the chat, standardizes the format, and saves it in local storage
+// Then creates a message, saves it in the database, and sends all client the message to append
 app.post("/uploadChat", upload.single('chatFile'), function (req, res) {
     const now = Date.now()
     gm(`./public/uploads/${req.file.filename}`)
