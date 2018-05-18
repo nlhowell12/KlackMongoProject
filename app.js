@@ -5,7 +5,9 @@ const multer = require('multer');
 const fs = require('fs');
 const cors = require('cors');
 const app = express()
+const gm = require('gm').subClass({ imageMagick: true });
 
+// Mlab Database Information
 const dbName = 'klack';
 const DB_USER = 'admin';
 const DB_PASSWORD = 'admin';
@@ -27,6 +29,11 @@ app.use(cors())
 
 app.set('views', './views');
 app.set('view engine', 'pug');
+// If this directory doesn't exist, then make it.
+var dir = './public/uploads';
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}
 
 // Mongo stuff
 mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_URI}/${dbName}`, () => {
@@ -39,18 +46,18 @@ db.on('error', console.error.bind(console, 'connection error: '));
 
 //User can upload image types - (jpg|jpeg|png|gif)
 var storage = multer.diskStorage({
-    
+
     destination: (req, file, cb) => {
-        cb(null, 'public/uploads/') 
+        cb(null, 'public/uploads/')
     },
     filename: (req, file, cb) => {
         if (!file.originalname.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
             return cb(new Error('Only image files are allowed!'), false);
         }
-        cb(null,Date.now()  + '-' + file.originalname)
+        cb(null, Date.now() + '-' + file.originalname)
     }
 });
-const upload = multer({storage: storage});
+const upload = multer({ storage: storage });
 
 // object of names and their respective pic filenames
 let profilePics = {
@@ -69,25 +76,16 @@ var Message = mongoose.model('Message', messageSchema);
 
 // user schema for profile pics and stuff
 var userSchema = new Schema({
+    socketID: String,
     name: String,
-    pic: String
+    pic: String,
+    active: Boolean,
+    timestamp: Number
 });
 var User = mongoose.model('User', userSchema);
 
-function userSortFn(a, b) {
-    var nameA = a.name.toUpperCase(); // ignore upper and lowercase
-    var nameB = b.name.toUpperCase(); // ignore upper and lowercase
-    if (nameA < nameB) {
-        return -1;
-    }
-    if (nameA > nameB) {
-        return 1;
-    }
-    // names must be equal
-    return 0;
-}
 
-let usersTimestamps = [];
+// Saves the usernames and most recent timestamps of user messages to populate the 10 most recently active users
 
 app.get('/', function (req, res) {  
     fs.readdir(path, function(err, items) {   
@@ -98,147 +96,172 @@ app.get('/', function (req, res) {
 
 io.on('connection', (socket) => {
     console.log(`Connected on Port: ${PORT}`)
-    
-    // make array of all the users and their pics
-    let allUsers = []
-    
-    User.find()
-    .then((users) => {
-        if (users) {
-            users.forEach(user => {
-                allUsers.push(user);
-            })
-        }
-    });
 
-    Message.find()
-    .then(messages => {
-        messages.forEach(message => {
-            if (!usersTimestamps[message.name]) {
-                usersTimestamps[message.name] = message.timestamp
-            } else if (usersTimestamps[message.name] < message.timestamp) {
-                usersTimestamps[message.name] = message.timestamp
-            }
+    User.find()
+        .then((users) => {
+            Message.find((err, messages) => {
+                socket.emit('initial', {
+                    messages,
+                    pics: users
+                });
+            })
         })
-    })
-    .then(() => {
-        const now = Date.now();
-        // consider users active if they have connected (GET or POST) in last 15 seconds
-        const requireActiveSince = now - (15*1000)
-        
-        // create a new list of users with a flag indicating whether they have been active recently
-        usersSimple = Object.keys(usersTimestamps).map((x) => ({name: x, active: (usersTimestamps[x] > requireActiveSince)}))
-        
-        // sort the list of users alphabetically by name
-        usersSimple.sort(userSortFn);
-        usersSimple.filter((a) => (a.name !== usersTimestamps.name))
-        socket.emit('activeUsers', {users: usersSimple})
-    })
-    .catch(err => {
-        console.error(err);
+        .catch(err => {
+            console.error(err);
     })    
     
-    Message.find((err, messages) => {
-        socket.emit('initial', {messages, pics: allUsers});
-    })
-    
-    
+    // When the client sends a chat message, save it in the database
+    // Then send the new message and the user to all connected sockets to append
     socket.on('chat', (data) =>{
         // get the current time
         const now = Date.now();
-        // consider users active if they have sent a message in last 15 seconds
-        const requireActiveSince = now - (15*1000)
-        
-        // update the requesting user's last access time
-        usersTimestamps[data.name] = now;
-        
-        // create a new list of users with a flag indicating whether they have been active recently
-        usersSimple = Object.keys(usersTimestamps).map((x) => ({name: x, active: (usersTimestamps[x] > requireActiveSince)}))
-        
-        // sort the list of users alphabetically by name
-        usersSimple.sort(userSortFn);
-        usersSimple.filter((a) => (a.name !== data.name))
         
         // Posts message to the db
         let message = new Message({
             name: data.name,
             message: data.message,
-            timestamp: now,  
+            timestamp: now,
         })
         message.save()
-        .then(data => {
-            console.log('msg saved to the database:', data);
-        })
-        .catch(err => {
-            console.log('Unable to save to database');
-        });
-        
-        // make array of all the users and their pics
-        let allUsers = []
-        User.find()
-        .then((users) => {
-            users.forEach(user => {
-                allUsers.push(user);
-                io.sockets.emit('chat', {message, users: usersSimple, pics: allUsers})
+            .then(data => {
+                console.log('msg saved to the database:', data);
             })
-        })
-        .catch(err => {
-            console.log("Error",err)
-        }) 
+            .catch(err => {
+                console.log('Unable to save to database');
+            });
+
+        User.find()
+            .then((users) => {
+                io.sockets.emit('chat', {
+                    message,
+                    pics: users
+                })
+            })
+            .catch(err => {
+                console.log("Error", err)
+            })
+
     })
-    
+
     // Receives a typing message and broadcasts it to all the sockets except the one sending it
     socket.on('typing', (data) => {
         socket.broadcast.emit('typing', data);
     })
-    
+
     // Recevies new user information and creates that entry in the database, assuming that there isn't already a profile with the same name in the DB
-    socket.on('user', (data) => {
-        var user = new User({
-            name: data.name,
-            pic: data.pic
+
+    socket.on('user', ({
+        name,
+        pic,
+        socketID
+    }) => { 
+        let timestamp = Date.now();
+        let user = new User({
+            name,
+            pic,
+            timestamp
         })
         User.update({
-            name: data.name
-        }, {
-            $setOnInsert: user
-        }, {
-            upsert: true
-        },
-        function (err, numAffected) {
-            console.log("User created", numAffected)
-        })
-    })
-    
-    // Updates active users every 15 seconds to show that a user is inactive
-    setInterval((sockets) => {
-        const now = Date.now();
-        // consider users active if their last message was sent in the last 15 seconds
-        const requireActiveSince = now - (15*1000)
-        
-        // create a new list of users with a flag indicating whether they have been active recently
-        usersSimple = Object.keys(usersTimestamps).map((x) => ({name: x, active: (usersTimestamps[x] > requireActiveSince)}))
-        
-        // sort the list of users alphabetically by name
-        usersSimple.sort(userSortFn);
-        usersSimple.filter((a) => (a.name !== usersTimestamps.name))
-        io.sockets.emit('activeUsers', {users: usersSimple})
-    }, 15000)
-})
+                name
+            }, {
+                $set: {
+                    socketID,
+                    active: true,
 
+                },
+                $setOnInsert: user
+            }, {
+                upsert: true
+            })
+            .then((numAffected) => {
+                console.log("User created", numAffected)
+            })
+            .then(() => {
+                return User.find()
+            })
+            .then((users) => {
+                // console.log(usersTimestamps)
+                users.sort(function(a, b) {return b.timestamp - a.timestamp})
+                if (users.length > 10) {
+                    users = users.slice(0, 10)
+                };
+                io.sockets.emit('activeUsers', {
+                    users
+                })
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    })
+
+ // When a socket disconnects, update the database to show that user has disconnected
+    // Then broadcast to all sockets, except the closed one, to update the User List
+    socket.on('disconnect', () => {
+        User.update({
+                "socketID": socket.id
+            }, {
+                $set: {
+                    active: false
+                }
+            })
+            .then(() => {
+                return User.find()
+            })
+            .then((users) => {
+                users.sort(function(a, b) {return b.timestamp - a.timestamp})
+                if (users.length > 10) {
+                    users = users.slice(0, 10)
+                };
+                io.sockets.emit('activeUsers', {
+                    users
+                })
+            })
+            .catch(err => {
+                console.error(err);
+            })
+    })
+})
 // handles pic uploading
 app.post('/upload', upload.single('fileToUpload'), function (req, res) {
     profilePics[req.body.user_id] = req.file.filename;
     User.update({
         name: req.body.user_id
     }, {
-        $set: {
-            pic: req.file.filename
+            $set: {
+                pic: req.file.filename
+            }
+        },
+        function (err, numAffected) {
+            console.log("User created", numAffected);
         }
-    },
-    function (err, numAffected) {
-        console.log("User created", numAffected);
-    }
-);
-res.redirect('/');
+    );
+    res.end();
+})
+
+// Receives a file to be uploaded into the chat, standardizes the format, and saves it in local storage
+// Then creates a message, saves it in the database, and sends all client the message to append
+app.post("/uploadChat", upload.single('chatFile'), function (req, res) {
+    const now = Date.now()
+    gm(`./public/uploads/${req.file.filename}`)
+        .resize('680>')
+        .noProfile()
+        .write(`./public/uploads/${req.file.filename}`, function (err) {
+            if (!err) console.log('done');
+            Message.create({
+                name: req.body.user_id,
+                message: req.file.filename,
+                timestamp: now,
+            })
+            .then(() => {
+                User.find()
+                .then((users) => {
+                    io.sockets.emit('chat', {message: {message: req.file.filename, name: req.body.user_id, timestamp: now}, pics: users})
+                })
+                .catch(err => {
+                    console.log("Error",err)
+                }) 
+            })
+            res.end();
+        });
+    
 })
