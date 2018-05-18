@@ -82,8 +82,6 @@ socket.emit('user', {name, socketID: socket.id})
 function listUsers(users) {
 let userStrings = users.map((user) =>
 (user.active ? `<span class="active"><span class="cyan">&#9679;</span> ${user.name}</span>` : `<span class="inactive">&#9675; ${user.name}</span>`)
-
-
 );
 
 userList.innerHTML = userStrings.join("<br>");
