@@ -6,9 +6,9 @@ html(lang="en")
     main
 
         body
-            nav.hide-on-large-only
+            nav.hide-on-large-only.blue
                 .nav-wrapper
-                    a.brand-logo(href='#!') Logo
+                    a.brand-logo(href='#!') Klack
                     a.sidenav-trigger(href='#', data-target='mobile-demo')
                         i.material-icons menu
                     ul.right.hide-on-med-and-down
@@ -20,15 +20,49 @@ html(lang="en")
                             a(href='collapsible.html') Javascript
                         li
                             a(href='mobile.html') Mobile
-                ul#mobile-demo.sidenav
+                ul#mobile-demo.sidenav.sidenav-fixed
+                    li.blue
+                            div#sidenav.row.background.blue
+                                div.col.s1#KlackContainer
+                                    img#klack.square(src="images/klack.png")
+                                div.col.s2.offset-s2.center-align
+                                    p#h1 Klack
                     li
-                        a(href='sass.html') Sass
-                    li
-                        a(href='badges.html') Components
-                    li
-                        a(href='collapsible.html') Javascript
-                    li
-                        a(href='mobile.html') Mobile
+                        ul.collapsible
+                            li#profile.left
+                                ul.collection
+                                    a#proImgContainer2.btn-floating.btn-large.waves-effect.waves-light.red.dropdown-trigger(href='#' data-target='dropdown2')
+                                        img#proImg(src='images/doge.jpg', alt='')
+                                    ul#dropdown2.dropdown-content
+                                        li
+                                            a(href='#!') Upload Profile Picture
+                                        
+                                    li#proPic.collection-item.avatar.valign-wrapper
+                                        span.title
+                                        p
+                                            | Doge
+                                            br
+                                            |          The Dog
+                                        
+                                ul.collapsible
+                                    li
+                                        #usersContainer.collapsible-header
+                                            i.material-icons face
+                                            | Active User List
+                                        .collapsible-body
+                                            div#userpane
+                                                div#users
+                                                    span.inactive ○ AAA
+                                                    br
+                                                    span.inactive ○ Adrian
+                                                    br
+                                                    span.active
+                                                        span#green ●
+                                                        |  aj
+                                                    br
+                                            
+                                        div#uploadDiv
+                                
             div#20.row
                 div.col.s1
                     ul#slide-out.sidenav.sidenav-fixed
@@ -38,34 +72,43 @@ html(lang="en")
                                     img#klack.square(src="images/klack.png")
                                 div.col.s2.offset-s2.center-align
                                     p#h1 Klack
-                        //- li
-
-                        //-     a(href="#name")
-                        //-         span.black-text.name John Doe
-
-                        //-     a(href="#email")
-                        //-         span.black-text.email jdandturk@gmail.com
-                        ul.collapsible
-                            li
-                                .collapsible-header
-                                    i.material-icons face
-                                    | Active User List
-                                .collapsible-body
-                                    div#userpane
-                                        div#users
-                                            span.inactive ○ AAA
-                                            br
-                                            span.inactive ○ Adrian
-                                            br
-                                            span.active
-                                                span#green ●
-                                                |  aj
-                                            br
+                    
+                        li
+                            ul.collapsible
+                                li#profile.left
+                                    ul.collection
+                                        a#proImgContainer.btn-floating.btn-large.waves-effect.waves-light.red.dropdown-trigger(href='#' data-target='dropdown1')
+                                            img#proImg(src='images/doge.jpg', alt='')
+                                        ul#dropdown1.dropdown-content
+                                            li
+                                                a(href='#!') Upload Profile Picture
+                                         
+                                        li#proPic.blue-text.collection-item.avatar.valign-wrapper
+                                            span.title
+                                            p
+                                                | Doge
+                                                br
+                                                |          The Dog
+                                         
+                                    ul.collapsible.blue-text
+                                        li
+                                            .collapsible-header
+                                                i.material-icons face
+                                                | Active User List
+                                            .collapsible-body
+                                                div#userpane
+                                                    div#users
+                                                        span.inactive ○ AAA
+                                                        br
+                                                        span.inactive ○ Adrian
+                                                        br
+                                                        span.active
+                                                            span#green ●
+                                                            |  aj
+                                                        br
+                                                
+                                            div#uploadDiv
                                 
-                            div#uploadDiv
-                                //- form#uploadForm(action="/upload", method="post", enctype="multipart/form-data")
-                                //-     input#fileToUpload.btn(type="file" name="fileToUpload")
-                                //-     input.btn(type="submit" value="Update profile picture" name="submit")
                 div.col.s12
                     div#chat
                         div.mainpane.chatbox
@@ -73,7 +116,39 @@ html(lang="en")
                                 div.chat.self
                                     div.user-photo  
                                     p.chat-message
-                                        | hello
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+                                        | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos iusto cumque dolore laborum illum libero incidunt debitis reprehenderit tempore distinctio, exercitationem ad, laboriosam sapiente maiores velit, nisi facilis deserunt placeat?
+
                         div#chat-form.chat-form
                             textarea#textArea
                             button#send.btn.waves-effect.waves-light.blue(type="submit" name="action")
